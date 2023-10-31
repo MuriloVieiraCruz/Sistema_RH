@@ -1,23 +1,26 @@
 package com.senai.sistema_rh_sa.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.senai.sistema_rh_sa.model.enums.Papel;
 import com.senai.sistema_rh_sa.model.enums.Status;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.validator.constraints.br.CPF;
 
 @Data
 @Entity(name = "Entregador")
 @Table(name = "entregadores")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Entregador {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @EqualsAndHashCode.Include
     private Integer id;
 
     @NotBlank(message = "O nome é obrigatório")
@@ -55,6 +58,18 @@ public class Entregador {
 
     public Entregador() {
         this.papel = Papel.ENTREGADOR;
-        this.status = Status.ATIVO;
+        this.status = Status.A;
+    }
+
+    @JsonIgnore
+    @Transient
+    public boolean isPersisted() {
+        return getId() != null && getId() > 0;
+    }
+
+    @JsonIgnore
+    @Transient
+    public boolean isActive() {
+        return getStatus() == Status.A;
     }
 }

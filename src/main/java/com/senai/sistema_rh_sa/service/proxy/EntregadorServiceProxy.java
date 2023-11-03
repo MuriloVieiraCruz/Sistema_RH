@@ -7,10 +7,11 @@ import com.senai.sistema_rh_sa.service.EntregadorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EntregadorProxy implements EntregadorService {
+public class EntregadorServiceProxy implements EntregadorService {
 
     @Autowired
     @Qualifier("entregadorServiceImpl")
@@ -37,7 +38,8 @@ public class EntregadorProxy implements EntregadorService {
     }
 
     @Override
-    public Page<Entregador> listarPor(String nome, Page paginacao) {
+    public Page<Entregador> listarPor(String nome, Pageable paginacao) {
         return this.service.listarPor(nome, paginacao);
     }
+
 }

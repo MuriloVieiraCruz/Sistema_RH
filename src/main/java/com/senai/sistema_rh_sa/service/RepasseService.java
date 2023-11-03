@@ -15,6 +15,8 @@ import jakarta.validation.constraints.Positive;
 public interface RepasseService {
 
     default public CompletableFuture<List<RepasseDto>> buscarRepasses(
+    		@Positive(message = "O ano deve ser positivo")
+            @NotNull(message = "A ano é obrigatório")
             Integer mes,
             @Positive(message = "O ano deve ser positivo")
             @NotNull(message = "A ano é obrigatório")

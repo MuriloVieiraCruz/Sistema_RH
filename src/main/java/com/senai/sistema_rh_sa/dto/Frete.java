@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 @Data
-public class RepasseDto {
+public class Frete {
 
     @Positive(message = "O ID deve ser maior que 0")
     @NotNull(message = "O ID é obrigatório")

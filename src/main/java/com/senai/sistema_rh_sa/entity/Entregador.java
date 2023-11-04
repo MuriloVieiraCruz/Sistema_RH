@@ -1,8 +1,8 @@
-package com.senai.sistema_rh_sa.model;
+package com.senai.sistema_rh_sa.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.senai.sistema_rh_sa.model.enums.Papel;
-import com.senai.sistema_rh_sa.model.enums.Status;
+import com.senai.sistema_rh_sa.entity.enums.Papel;
+import com.senai.sistema_rh_sa.entity.enums.Status;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

@@ -2,9 +2,8 @@ package com.senai.sistema_rh_sa.controller;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.senai.sistema_rh_sa.dto.EntregadorDto;
-import com.senai.sistema_rh_sa.model.Entregador;
-import com.senai.sistema_rh_sa.model.enums.Status;
+import com.senai.sistema_rh_sa.dto.Entregador;
+import com.senai.sistema_rh_sa.entity.enums.Status;
 import com.senai.sistema_rh_sa.service.EntregadorService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,19 +29,19 @@ public class EntregadorController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<?> salvar(@RequestBody EntregadorDto entregadorDto) {
-        Preconditions.checkArgument(!entregadorDto.isPersisted(),
+    public ResponseEntity<?> salvar(@RequestBody Entregador entregador) {
+        Preconditions.checkArgument(!entregador.isPersisted(),
                 "O entregador não pode conter ID na inserção");
-        Entregador entregadorSalvo = service.salvar(entregadorDto);
+        com.senai.sistema_rh_sa.entity.Entregador entregadorSalvo = service.salvar(entregador);
         return ResponseEntity.created(URI.create("/entregador/id" + entregadorSalvo.getId())).build();
     }
 
     @PutMapping
     @Transactional
-    public ResponseEntity<?> alterar(@RequestBody EntregadorDto entregadorDto) {
-        Preconditions.checkArgument(entregadorDto.isPersisted(),
+    public ResponseEntity<?> alterar(@RequestBody Entregador entregador) {
+        Preconditions.checkArgument(entregador.isPersisted(),
                 "O entregador precisa ter um ID para alteração");
-        Entregador entregadorAlterado = service.salvar(entregadorDto);
+        com.senai.sistema_rh_sa.entity.Entregador entregadorAlterado = service.salvar(entregador);
         return ResponseEntity.ok(converter.toJsonMap(entregadorAlterado));
     }
 
@@ -56,7 +55,7 @@ public class EntregadorController {
 
     @GetMapping("/id/{id}")
     public ResponseEntity<?> searchBy(@PathVariable("id") Integer id) {
-        Entregador entregadorEncontrado = service.buscarPor(id);
+        com.senai.sistema_rh_sa.entity.Entregador entregadorEncontrado = service.buscarPor(id);
         return ResponseEntity.ok(converter.toJsonMap(entregadorEncontrado));
     }
 
@@ -71,14 +70,14 @@ public class EntregadorController {
             paginacao = PageRequest.of(0, 20);
         }
 
-        Page<Entregador> entregadores = service.listarPor(nome, paginacao);
+        Page<com.senai.sistema_rh_sa.entity.Entregador> entregadores = service.listarPor(nome, paginacao);
         return ResponseEntity.ok(converter.toJsonList(entregadores));
     }
 
     @DeleteMapping("id/{id}")
     @Transactional
     public ResponseEntity<?> excludeBy(@PathVariable("id") Integer id) {
-        Entregador entregadorExcluido = service.excluirPor(id);
+        com.senai.sistema_rh_sa.entity.Entregador entregadorExcluido = service.excluirPor(id);
 
         return ResponseEntity.ok(converter.toJsonMap(entregadorExcluido));
     }

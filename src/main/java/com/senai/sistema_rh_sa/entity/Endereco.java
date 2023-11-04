@@ -1,4 +1,4 @@
-package com.senai.sistema_rh_sa.model;
+package com.senai.sistema_rh_sa.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

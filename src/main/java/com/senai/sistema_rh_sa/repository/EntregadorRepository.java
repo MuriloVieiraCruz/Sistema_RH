@@ -1,7 +1,7 @@
 package com.senai.sistema_rh_sa.repository;
 
-import com.senai.sistema_rh_sa.model.Entregador;
-import com.senai.sistema_rh_sa.model.enums.Status;
+import com.senai.sistema_rh_sa.entity.Entregador;
+import com.senai.sistema_rh_sa.entity.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

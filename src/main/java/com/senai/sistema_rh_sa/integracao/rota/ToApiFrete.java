@@ -1,8 +1,9 @@
 package com.senai.sistema_rh_sa.integracao.rota;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.senai.sistema_rh_sa.dto.RepasseDto;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.senai.sistema_rh_sa.dto.Frete;
 import com.senai.sistema_rh_sa.integracao.processor.ErrorProcessor;
 
 import java.lang.reflect.Type;
@@ -24,35 +25,27 @@ public class ToApiFrete extends RouteBuilder {
 
     @Autowired
     private ErrorProcessor errorProcessor;
-    
-    private List<RepasseDto> repasseDtoList;
+
+    private List<Frete> freteList;
 
     @Override
     public void configure() throws Exception {
         from("direct:enviarRequisicao")
                 .doTry()
-                    .setHeader(Exchange.HTTP_METHOD, HttpMethods.GET)
-                    .setHeader(Exchange.CONTENT_TYPE, simple("application/json;charset=UTF-8"))
-                    .to(urlDeRequisicao)
-                    .process(new Processor() {
-						
-						@Override
-						public void process(Exchange exchange) throws Exception {
-							
-							String responseBody = exchange.getIn().getBody(String.class);
-							
-							Gson gson = new Gson();
-							Type freteTypeList = new TypeToken<List<RepasseDto>>(){}.getType();
-							repasseDtoList = gson.fromJson(responseBody, freteTypeList);
-						}
-					})
-        .doCatch(Exception.class)
-        .setProperty("error", simple("${exception"))
-        .process(errorProcessor)
-        .end();
-    }
-    
-    public List<RepasseDto> obterRepasseDtoList() {
-        return repasseDtoList;
+                .setHeader(Exchange.HTTP_METHOD, HttpMethods.GET)
+                .to(urlDeRequisicao)
+                .process(exchange -> {
+                    String responseBody = exchange.getIn().getBody(String.class);
+
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    JavaType freteTypeList = TypeFactory.defaultInstance().constructCollectionType(List.class, Frete.class);
+                    freteList = objectMapper.readValue(responseBody, freteTypeList);
+
+                    exchange.getIn().setBody(freteTypeList);
+                })
+                .doCatch(Exception.class)
+                .setProperty("error", simple("${exception"))
+                .process(errorProcessor)
+                .end();
     }
 }

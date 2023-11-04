@@ -1,20 +1,21 @@
-package com.senai.sistema_rh_sa.model;
+package com.senai.sistema_rh_sa.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
-@Entity(name = "Repasses")
+@Data
+@Entity(name = "Repasse")
 @Table(name = "repasses")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Repasses {
+public class Repasse {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,11 +33,17 @@ public class Repasses {
     @Column(name = "data_movimentacao")
     private Instant dataPagamento;
 
-    @DecimalMin(value = "0.0", inclusive = true, message = "O valor precisa ser positivo")
-    @Digits(integer = 8, fraction = 2, message = "O valor precisa conter o formato 'NNNNNNNNN.NN'")
-    @NotNull(message = "O valor não pode ser nulo")
-    @Column(name = "valor")
-    private BigDecimal valor;
+    @DecimalMin(value = "0.0", inclusive = true, message = "O valor bruto precisa ser positivo")
+    @Digits(integer = 6, fraction = 2, message = "O valor bruto precisa conter o formato 'NNNNNN.NN'")
+    @NotNull(message = "O valor bruto não pode ser nulo")
+    @Column(name = "valor_bruto")
+    private BigDecimal valorBruto;
+
+    @DecimalMin(value = "0.0", inclusive = true, message = "O valor líquido precisa ser positivo")
+    @Digits(integer = 6, fraction = 2, message = "O valor líquido precisa conter o formato 'NNNNNNNNN.NN'")
+    @NotNull(message = "O valor líquido não pode ser nulo")
+    @Column(name = "valor_liquido")
+    private BigDecimal valorLiquido;
 
     @Column(name = "ano")
     private Integer ano;
@@ -52,6 +59,9 @@ public class Repasses {
 
     @Column(name = "quantidade_entregas")
     private Integer quantidadeDeEntregas;
+
+    @Column(name = "seguro_de_vida")
+    private Integer seguroDeVida;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull(message = "O entregador é obrigatório")

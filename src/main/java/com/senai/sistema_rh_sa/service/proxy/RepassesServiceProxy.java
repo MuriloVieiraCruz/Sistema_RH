@@ -38,7 +38,6 @@ public class RepassesServiceProxy implements RepasseService {
     	filtro.setAno(ano);
     	filtro.setMes(mes);
     	return filtro;
-
     }
 
 }

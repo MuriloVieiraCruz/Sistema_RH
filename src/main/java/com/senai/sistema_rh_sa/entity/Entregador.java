@@ -6,6 +6,7 @@ import com.senai.sistema_rh_sa.entity.enums.Status;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -55,6 +56,10 @@ public class Entregador {
     @NotBlank(message = "O status do entregador é obrigatório")
     @Column(name = "status")
     private Status status;
+
+    @NotNull(message = "O seguro de vida é obrigatório")
+    @Column(name = "seguro_de_vida")
+    private Boolean seguroDeVida;
 
     public Entregador() {
         this.papel = Papel.ENTREGADOR;

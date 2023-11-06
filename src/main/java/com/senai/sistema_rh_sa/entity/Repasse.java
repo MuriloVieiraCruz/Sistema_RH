@@ -2,9 +2,7 @@ package com.senai.sistema_rh_sa.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -45,9 +43,13 @@ public class Repasse {
     @Column(name = "valor_liquido")
     private BigDecimal valorLiquido;
 
+    @Positive(message = "O ano deve ser positivo")
+    @NotNull(message = "O ano é obrigatório")
     @Column(name = "ano")
     private Integer ano;
 
+    @Positive(message = "O mês deve ser positivo")
+    @NotNull(message = "O mês é obrigatório")
     @Column(name = "ano")
     private Integer mes;
 
@@ -60,11 +62,26 @@ public class Repasse {
     @Column(name = "quantidade_entregas")
     private Integer quantidadeDeEntregas;
 
-    @Column(name = "seguro_de_vida")
-    private Integer seguroDeVida;
+    @DecimalMin(value = "0.0", inclusive = true, message = "A taxa de seguro precisa ser positivo")
+    @Digits(integer = 8, fraction = 2, message = "A taxa de seguro precisa conter o formato 'NNNNNNNNN.NN'")
+    @NotNull(message = "A taxa de seguro não pode ser nula")
+    @Column(name = "taxa_seguro_de_vida")
+    private BigDecimal taxaSeguroDeVida;
+
+    @DecimalMin(value = "0.0", inclusive = false, message = "O percentual de seguro não pode ser inferior a 0.01%")
+    @DecimalMax(value = "100.0", inclusive = false, message = "O percentual de seguro não pode ser superior a 100.00%")
+    @Digits(integer = 2, fraction = 2, message = "O percentual de seguro deve possuir o formato 'NN.NN'")
+    @Column(name = "percentual_seguro_de_vida")
+    private BigDecimal percentualSeguroDeVida;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull(message = "O entregador é obrigatório")
     @JoinColumn(name = "entregador_id")
     private Entregador entregador;
+
+    public Repasse() {
+        this.percentualSeguroDeVida = new BigDecimal(7);
+        this.dataMoviementacao = Instant.now();
+        this.dataPagamento = Instant.now();
+    }
 }

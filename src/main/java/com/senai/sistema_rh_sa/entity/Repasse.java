@@ -28,7 +28,7 @@ public class Repasse {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
     @NotNull(message = "A data de pagamento não pode ser nula")
-    @Column(name = "data_movimentacao")
+    @Column(name = "data_pagamento")
     private Instant dataPagamento;
 
     @DecimalMin(value = "0.0", inclusive = true, message = "O valor bruto precisa ser positivo")
@@ -50,20 +50,20 @@ public class Repasse {
 
     @Positive(message = "O mês deve ser positivo")
     @NotNull(message = "O mês é obrigatório")
-    @Column(name = "ano")
+    @Column(name = "mes")
     private Integer mes;
 
     @DecimalMin(value = "0.0", inclusive = true, message = "A bonificacao precisa ser positivo")
-    @Digits(integer = 8, fraction = 2, message = "A bonificacao precisa conter o formato 'NNNNNNNNN.NN'")
+    @Digits(integer = 6, fraction = 2, message = "A bonificacao precisa conter o formato 'NNNNNNNNN.NN'")
     @NotNull(message = "A bonificacao não pode ser nula")
     @Column(name = "bonificacao")
     private BigDecimal bonificacao;
 
-    @Column(name = "quantidade_entregas")
+    @Column(name = "quantidade_de_entregas")
     private Integer quantidadeDeEntregas;
 
     @DecimalMin(value = "0.0", inclusive = true, message = "A taxa de seguro precisa ser positivo")
-    @Digits(integer = 8, fraction = 2, message = "A taxa de seguro precisa conter o formato 'NNNNNNNNN.NN'")
+    @Digits(integer = 6, fraction = 2, message = "A taxa de seguro precisa conter o formato 'NNNNNNNNN.NN'")
     @NotNull(message = "A taxa de seguro não pode ser nula")
     @Column(name = "taxa_seguro_de_vida")
     private BigDecimal taxaSeguroDeVida;

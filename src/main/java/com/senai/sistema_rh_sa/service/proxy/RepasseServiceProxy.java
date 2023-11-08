@@ -14,10 +14,10 @@ import com.senai.sistema_rh_sa.dto.Filtro;
 import com.senai.sistema_rh_sa.service.RepasseService;
 
 @Service
-public class RepassesServiceProxy implements RepasseService {
+public class RepasseServiceProxy implements RepasseService {
 
     @Autowired
-    @Qualifier("entregasServiceImpl")
+    @Qualifier("repasseServiceImpl")
     private RepasseService repasseService;
     
     @Autowired

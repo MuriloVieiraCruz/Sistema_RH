@@ -11,18 +11,18 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EntregadorRepository extends JpaRepository<Entregador, Integer> {
 
-    @Query(value = "SELECT e FROM Entregador e WHERE e.cpf = :cpf ;")
+    @Query(value = "SELECT e FROM Entregador e WHERE e.cpf = :cpf ")
     public Entregador buscarPorCPF(String cpf);
 
-    @Query(value = "SELECT e FROM Entregador e WHERE e.telefone = :telefone ;")
+    @Query(value = "SELECT e FROM Entregador e WHERE e.telefone = :telefone ")
     public Entregador buscarPorTelefone(String telefone);
 
-    @Query(value = "SELECT e FROM Entregador e WHERE e.numeroHabilitacao = :numeroHabilitacao ;")
+    @Query(value = "SELECT e FROM Entregador e WHERE e.numeroHabilitacao = :numeroHabilitacao ")
     public Entregador buscarPorCNH(String numeroHabilitacao);
 
-    @Query(value = "SELECT e FROM Entregador e WHERE Upper(e.nome) LIKE Upper(:nome) ;")
+    @Query(value = "SELECT e FROM Entregador e WHERE Upper(e.nome) LIKE Upper(:nome) ")
     public Page<Entregador> listarPor(String nome, Pageable paginacao);
 
-    @Query(value = "UPDATE Entregador e SET e.status = :status WHERE e.id = :id ;")
+    @Query(value = "UPDATE Entregador e SET e.status = :status WHERE e.id = :id ")
     public void alterarStatusPor(Integer id, Status status);
 }

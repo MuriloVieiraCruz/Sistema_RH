@@ -2,6 +2,7 @@ package com.senai.sistema_rh_sa.service.impl;
 
 import com.google.common.base.Preconditions;
 import com.senai.sistema_rh_sa.dto.Entregador;
+import com.senai.sistema_rh_sa.entity.Endereco;
 import com.senai.sistema_rh_sa.entity.enums.Status;
 import com.senai.sistema_rh_sa.repository.EntregadorRepository;
 import com.senai.sistema_rh_sa.service.EntregadorService;
@@ -21,10 +22,17 @@ public class EntregadorServiceImpl implements EntregadorService {
     @Override
     public com.senai.sistema_rh_sa.entity.Entregador salvar(Entregador entregadorDto) {
         com.senai.sistema_rh_sa.entity.Entregador entregador = new com.senai.sistema_rh_sa.entity.Entregador();
-        entregador.setNome(entregador.getNome());
-        entregador.setCpf(entregador.getCpf());
-        entregador.setEndereco(entregador.getEndereco());
-        entregador.setTelefone(entregador.getTelefone());
+        entregador.setNome(entregadorDto.getNome());
+        entregador.setCpf(entregadorDto.getCpf());
+        Endereco endereco = new Endereco();
+        endereco.setBairro(entregadorDto.getBairro());
+        endereco.setLogradouro(entregadorDto.getLogradouro());
+        endereco.setCidade(entregadorDto.getCidade());
+        endereco.setEstado(entregadorDto.getEstado());
+        entregador.setEndereco(endereco);
+        entregador.setTelefone(entregadorDto.getTelefone());
+        entregador.setNumeroHabilitacao(entregadorDto.getNumeroHabilitacao());
+        entregador.setSeguroDeVida(entregadorDto.getSeguroDeVida());
         this.verificaCpf(entregador);
         this.verificaTelefone(entregador);
         this.verificaCNH(entregador);

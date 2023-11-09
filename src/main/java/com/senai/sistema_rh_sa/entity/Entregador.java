@@ -31,6 +31,7 @@ public class Entregador {
 
     @CPF(message = "O CPF está inválido")
     @Column(name = "cpf")
+    @EqualsAndHashCode.Include
     private String cpf;
 
     @Embedded
@@ -38,22 +39,24 @@ public class Entregador {
     private Endereco endereco;
 
     @NotBlank(message = "O número da habilitação é obrigatório")
-    @Size(max = 10, min = 10, message = "O número da habilitação deve conter 10 caracteres")
+    @Size(max = 9, min = 9, message = "O número da habilitação deve conter 10 caracteres")
     @Column(name = "numero_habilitacao")
+    @EqualsAndHashCode.Include
     private String numeroHabilitacao;
 
     @NotBlank(message = "O telefone é obrigatório")
     @Size(max = 14, min = 14, message = "O telefone deve conter 14 caracteres")
-    @Column(name = "")
+    @Column(name = "telefone")
+    @EqualsAndHashCode.Include
     private String telefone;
 
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "O papel do entregador é obrigatório")
+    @NotNull(message = "O papel do entregador é obrigatório")
     @Column(name = "papel")
     private Papel papel;
 
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "O status do entregador é obrigatório")
+    @NotNull(message = "O status do entregador é obrigatório")
     @Column(name = "status")
     private Status status;
 

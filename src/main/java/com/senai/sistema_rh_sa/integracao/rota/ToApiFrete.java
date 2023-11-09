@@ -10,6 +10,7 @@
 //import java.util.List;
 //
 //import org.apache.camel.Exchange;
+//import org.apache.camel.ExchangePattern;
 //import org.apache.camel.Processor;
 //import org.apache.camel.builder.RouteBuilder;
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@
 //        from("direct:enviarRequisicao")
 //                .doTry()
 //                .setHeader(Exchange.HTTP_METHOD, HttpMethods.GET)
+//                .setExchangePattern(ExchangePattern.InOut)
 //                .to(urlDeRequisicao)
 //                .process(exchange -> {
 //                    String responseBody = exchange.getIn().getBody(String.class);

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.senai.sistema_rh_sa.dto.Frete;
 import com.senai.sistema_rh_sa.entity.Repasse;
+import org.apache.camel.ExchangePattern;
 import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,9 +27,7 @@ public class RepasseServiceProxy implements RepasseService {
     @Override
     public List<Repasse> calcularRepassesPor(Integer mes, Integer ano) {
     	Filtro filtro = montarFiltroPor(mes, ano);
-        this.toApiFrete.sendBody("direct:enviarRequisicao", filtro);
-
-    	List<Frete> freteList = new ArrayList<>();
+        List<Frete> freteList = (List<Frete>) this.toApiFrete.sendBody("direct:enviarRequisicao", ExchangePattern.InOut, filtro);
         List<Repasse> repasseList = this.repasseService.calcularRepassesPor(freteList);
         return repasseList;
     }

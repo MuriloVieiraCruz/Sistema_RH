@@ -26,8 +26,9 @@ public class RepasseServiceProxy implements RepasseService {
 
     @Override
     public List<Repasse> calcularRepassesPor(Integer mes, Integer ano) {
+        //TODO Verificar a implementação nessa parte de código
     	Filtro filtro = montarFiltroPor(mes, ano);
-        List<Frete> freteList = (List<Frete>) this.toApiFrete.sendBody("direct:enviarRequisicao", ExchangePattern.InOut, filtro);
+        List<Frete> freteList = (List<Frete>) this.toApiFrete.sendBody("direct:enviarRequisicao", null, filtro);
         List<Repasse> repasseList = this.repasseService.calcularRepassesPor(freteList);
         return repasseList;
     }

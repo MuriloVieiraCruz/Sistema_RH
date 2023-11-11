@@ -2,6 +2,7 @@ package com.senai.sistema_rh_sa;
 
 import com.senai.sistema_rh_sa.dto.Frete;
 import com.senai.sistema_rh_sa.entity.Repasse;
+import com.senai.sistema_rh_sa.repository.RepasseRepository;
 import com.senai.sistema_rh_sa.service.impl.RepasseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -26,7 +27,7 @@ public class SistemaRhSaApplication {
 	}
 
 	@Autowired
-	private RepasseServiceImpl repasseService;
+	private RepasseRepository repository;
 
 	@Bean
 	public CommandLineRunner commandLineRunner() {

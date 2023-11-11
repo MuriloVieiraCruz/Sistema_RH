@@ -39,27 +39,7 @@ public class ToApiFrete extends RouteBuilder {
     public void configure() throws Exception {
         from("direct:enviarRequisicao")
                 .doTry()
-                .setHeader(Exchange.HTTP_METHOD, constant(HttpMethods.POST))
-                .setHeader(Exchange.CONTENT_TYPE, constant("application/json;charset=UTF-8"))
-                .process(new Processor() {
-                    @Override
-                    public void process(Exchange exchange) throws Exception {
-                        JsonObject requestBody = new JsonObject();
-                        requestBody.put("login", username);
-                        requestBody.put("senha", password);
-                        exchange.getMessage().setBody(requestBody);
-                    }
-                })
-                .to(urlToken)
-                .process(new Processor() {
-                    @Override
-                    public void process(Exchange exchange) throws Exception {
-                        String respostaJson = exchange.getIn().getBody(String.class);
-                        JSONObject jsonObject = new JSONObject(respostaJson);
-                        String token = jsonObject.getString("token");
-                        exchange.setProperty("token", token);
-                    }
-                })
+                .to("direct:atenticacao")
                 .setHeader(Exchange.HTTP_METHOD, constant(HttpMethods.GET))
                 .setHeader(Exchange.CONTENT_TYPE, constant("application/json;charset=UTF-8"))
                 .setHeader("Authorization", simple("Bearer ${exchangeProperty.token}"))

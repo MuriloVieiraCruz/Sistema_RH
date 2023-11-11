@@ -5,6 +5,8 @@ import com.senai.sistema_rh_sa.entity.Repasse;
 import com.senai.sistema_rh_sa.service.exception.MetodoNaoSuportadoException;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
@@ -16,13 +18,24 @@ public interface RepasseService {
             @Positive(message = "O ano deve ser positivo")
             @NotNull(message = "A ano é obrigatório")
             Integer ano,
-            @Positive(message = "O mês deve ser positivo")
+
+            @Range(min = 1, max = 12, message = "O mês deve estar entre 1 e 12")
             @NotNull(message = "A mês é obrigatório")
             Integer mes){
         throw new MetodoNaoSuportadoException("Este método não é suportado para para a operação atual");
     }
 
-    default public List<Repasse> calcularRepassesPor(List<Frete> entregas){
+    default public List<Repasse> calcularRepassesPor(
+            @NotNull(message = "A lista de entregas é obrigatório")
+            List<Frete> entregas,
+
+            @Positive(message = "O ano deve ser positivo")
+            @NotNull(message = "A ano é obrigatório")
+            Integer ano,
+
+            @Range(min = 1, max = 12, message = "O mês deve estar entre 1 e 12")
+            @NotNull(message = "A mês é obrigatório")
+            Integer mes){
         throw new MetodoNaoSuportadoException("Este método não é suportado para para a operação atual");
     }
 }

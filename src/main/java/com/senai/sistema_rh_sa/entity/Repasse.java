@@ -80,8 +80,9 @@ public class Repasse {
     private Entregador entregador;
 
     public Repasse() {
+        this.quantidadeDeEntregas = 1;
+        this.valorBruto = new BigDecimal(0);
         this.percentualSeguroDeVida = new BigDecimal(7);
-        this.dataMoviementacao = Instant.now();
         this.dataPagamento = Instant.now();
     }
 }

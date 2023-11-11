@@ -1,4 +1,4 @@
-package com.senai.sistema_rh_sa.integracao.rota;
+/*package com.senai.sistema_rh_sa.integracao.rota;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -77,4 +77,4 @@ public class ToApiFrete extends RouteBuilder {
                 .process(errorProcessor)
                 .end();
     }
-}
+}*/

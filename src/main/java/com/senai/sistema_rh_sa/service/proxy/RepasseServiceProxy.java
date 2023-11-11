@@ -25,11 +25,11 @@ public class RepasseServiceProxy implements RepasseService {
     private ProducerTemplate toApiFrete;
 
     @Override
-    public List<Repasse> calcularRepassesPor(Integer mes, Integer ano) {
+    public List<Repasse> calcularRepassesPor(Integer ano, Integer mes) {
         //TODO Verificar a implementação nessa parte de código
     	Filtro filtro = montarFiltroPor(mes, ano);
         List<Frete> freteList = (List<Frete>) this.toApiFrete.sendBody("direct:enviarRequisicao", null, filtro);
-        List<Repasse> repasseList = this.repasseService.calcularRepassesPor(freteList);
+        List<Repasse> repasseList = this.repasseService.calcularRepassesPor(freteList, ano, mes);
         return repasseList;
     }
     

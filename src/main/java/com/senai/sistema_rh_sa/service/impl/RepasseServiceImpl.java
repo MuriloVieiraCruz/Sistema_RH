@@ -8,13 +8,11 @@ import com.senai.sistema_rh_sa.service.EntregadorService;
 import com.senai.sistema_rh_sa.service.RepasseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class RepasseServiceImpl implements RepasseService {
@@ -25,68 +23,61 @@ public class RepasseServiceImpl implements RepasseService {
 
     @Autowired
     private RepasseRepository repository;
+    @Value("${taxa-seguro}")
+    private BigDecimal taxaDeSeguro;
+    @Value("${percentual-bonificacao}")
+    private BigDecimal percentualDeBonificacao;
 
     @Override
-    public List<Repasse> calcularRepassesPor(List<Frete> freteList) {
+    public List<Repasse> calcularRepassesPor(List<Frete> freteList, Integer ano, Integer mes) {
 
-        List<Repasse> listaDeRepasses = new ArrayList<>();
-        Repasse repasse = null;
-        BigDecimal valorLiquido;
-        BigDecimal valorBruto;
-        BigDecimal valorBrutoFinal = null;
-        Integer qtdeDeEntregas;
+        Map<Entregador, Repasse> repassesPorEntregador = new HashMap<>();
 
         for (Frete frete : freteList) {
 
-            repasse = new Repasse();
             Entregador entregador = entregadorService.buscarPor(frete.getIdEntregador());
-            repasse.setEntregador(entregador);
-            qtdeDeEntregas = 1;
-            valorBruto = frete.getFrete();
-
-            for (Frete frete1 : freteList) {
-                if (entregador.getId().equals(frete1.getIdEntregador())) {
-                    qtdeDeEntregas += 1;
-                    valorBrutoFinal = valorBruto.add(frete1.getFrete());
-                    freteList.remove(frete);
-                }
+            boolean isEntregadorPresente = repassesPorEntregador.get(entregador) != null;
+            Repasse repasseDoEntregador = null;
+            if (isEntregadorPresente){
+                repasseDoEntregador = repassesPorEntregador.get(entregador);
+                BigDecimal valorBrutoFinal = repasseDoEntregador.getValorBruto().add(frete.getFrete());
+                repasseDoEntregador.setValorBruto(valorBrutoFinal);
+                repasseDoEntregador.setQuantidadeDeEntregas(repasseDoEntregador.getQuantidadeDeEntregas() + 1);
+            }else{
+                repasseDoEntregador = new Repasse();
+                repasseDoEntregador.setValorBruto(frete.getFrete());
+                repasseDoEntregador.setDataMoviementacao(frete.getDataMovimento());
+                repasseDoEntregador.setAno(ano);
+                repasseDoEntregador.setMes(mes);
             }
+            repassesPorEntregador.put(entregador, repasseDoEntregador);
 
-            if (entregador.getSeguroDeVida()) {
-                BigDecimal divisor = new BigDecimal(100);
-                BigDecimal percentualDaTaxaDeSeguro = repasse.getPercentualSeguroDeVida();
-                BigDecimal valorDescontado = valorBrutoFinal
-                        .multiply(percentualDaTaxaDeSeguro)
-                        .divide(divisor);
-                repasse.setTaxaSeguroDeVida(valorDescontado);
-            }
-
-            valorLiquido = valorBrutoFinal.subtract(repasse.getTaxaSeguroDeVida());
-            repasse.setValorLiquido(valorLiquido);
-            repasse.setQuantidadeDeEntregas(qtdeDeEntregas);
-            repasse.setValorBruto(valorBrutoFinal);
-            valorBrutoFinal = null;
-            valorBruto = null;
-            valorLiquido = null;
-            Repasse repasseSalvo = repository.save(repasse);
-            listaDeRepasses.add(repasseSalvo);
         }
 
-        Collections.sort(listaDeRepasses, new Comparator<Repasse>() {
-            @Override
-            public int compare(Repasse repasse1, Repasse repasse2) {
-                return Integer.compare(repasse1.getQuantidadeDeEntregas(), repasse2.getQuantidadeDeEntregas());
-            }
+        List<Repasse> repassesConsolidados = new ArrayList<>();
+        repassesPorEntregador.forEach((e, re) -> {
+            re.setEntregador(e);
+            repassesConsolidados.add(re);
         });
 
-        BigDecimal bonificacao = new BigDecimal(50);
+        /*Collections.sort(repassesConsolidados, new Comparator<Repasse>() {
+            @Override
+            public int compare(Repasse repasse1, Repasse repasse2) {
+                return -Integer.compare(repasse1.getQuantidadeDeEntregas(), repasse2.getQuantidadeDeEntregas());
+            }
+        });*/
 
-        for (int i = 0; i < 3; i++) {
-            repasse.setValorLiquido(repasse.getValorLiquido().add(bonificacao));
-            bonificacao.subtract(new BigDecimal(12));
+        for (Repasse repasse : repassesConsolidados){
+            BigDecimal valorLiquido = repasse.getValorBruto().subtract(taxaDeSeguro);
+            BigDecimal divisor = new BigDecimal(100);
+            BigDecimal percentual = percentualDeBonificacao.divide(divisor);
+            BigDecimal valorBonificacao = valorLiquido.multiply(percentual);
+            BigDecimal valorLiquidoFinal = valorLiquido.add(valorBonificacao);
+            repasse.setValorLiquido(valorLiquidoFinal);
+            repasse.setBonificacao(percentualDeBonificacao);
+            repasse.setTaxaSeguroDeVida(taxaDeSeguro);
+            repository.save(repasse);
         }
-        List<Repasse> listaDeRepassesSalvos = repository.saveAllAndFlush(listaDeRepasses);
-        return listaDeRepassesSalvos;
-        //falta setar o atributo ano e mês
+        return repassesConsolidados;
     }
 }

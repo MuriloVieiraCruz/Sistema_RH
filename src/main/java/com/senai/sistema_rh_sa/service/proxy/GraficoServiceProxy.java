@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class GraficoServiceProxy implements GraficoService {
@@ -18,7 +19,7 @@ public class GraficoServiceProxy implements GraficoService {
     private GraficoService service;
 
     @Override
-    public List<DadosDoGrafico> calcularDadosPor(Integer ano, Integer mes) {
+    public Map<Integer, DadosDoGrafico> calcularDadosPor(Integer ano, Integer mes) {
        return service.calcularDadosPor(ano, mes);
     }
 }

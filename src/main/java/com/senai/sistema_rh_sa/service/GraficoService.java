@@ -12,7 +12,7 @@ import java.util.Map;
 
 public interface GraficoService {
 
-    default public List<DadosDoGrafico> calcularDadosPor(
+    default public Map<Integer, DadosDoGrafico> calcularDadosPor(
             @Positive(message = "O ano deve ser positivo")
             @NotNull(message = "A ano é obrigatório")
             Integer ano,

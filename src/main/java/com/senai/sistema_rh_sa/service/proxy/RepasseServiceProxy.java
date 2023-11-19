@@ -7,6 +7,8 @@ import com.senai.sistema_rh_sa.dto.Frete;
 import com.senai.sistema_rh_sa.entity.Repasse;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.ProducerTemplate;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -26,18 +28,23 @@ public class RepasseServiceProxy implements RepasseService {
 
     @Override
     public List<Repasse> calcularRepassesPor(Integer ano, Integer mes) {
-        //TODO Verificar a implementação nessa parte de código / fazer o envio do token primeiro
-    	Filtro filtro = montarFiltroPor(mes, ano);
-        List<Frete> freteList = (List<Frete>) this.toApiFrete.sendBody("direct:enviarRequisicao", null, filtro);
-        List<Repasse> repasseList = this.repasseService.calcularRepassesPor(freteList, ano, mes);
+        JSONObject requestBodyAnoMes = new JSONObject();
+        requestBodyAnoMes.put("ano", ano);
+        requestBodyAnoMes.put("mes", mes);
+        JSONArray jsonArray = toApiFrete.requestBody("direct:buscarFrete", requestBodyAnoMes, JSONArray.class);
+        List<Frete> listaDeFretes = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            Frete frete = new Frete();
+            frete.setId(jsonObject.getInt("id"));
+            frete.setValorTotal(jsonObject.getBigDecimal("valorTotal"));
+            //frete.setDataMovimento(jsonObject.get("dataMovimento"));
+            frete.setIdEntregador(jsonObject.getInt("idEntregador"));
+            listaDeFretes.add(frete);
+        }
+
+        List<Repasse> repasseList = this.repasseService.calcularRepassesPor(listaDeFretes, ano, mes);
         return repasseList;
-    }
-    
-    private Filtro montarFiltroPor(Integer mes, Integer ano) {
-    	Filtro filtro = new Filtro();
-    	filtro.setAno(ano);
-    	filtro.setMes(mes);
-    	return filtro;
     }
 
 }

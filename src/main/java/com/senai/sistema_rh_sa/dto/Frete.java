@@ -20,7 +20,7 @@ public class Frete {
     @DecimalMin(value = "0.0", inclusive = true, message = "O frete precisa ser positivo")
     @Digits(integer = 3, fraction = 2, message = "O frete precisa conter o formato 'NNN.NN'")
     @NotNull(message = "O frete não pode ser nulo")
-    private BigDecimal frete;
+    private BigDecimal valorTotal;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
     @NotNull(message = "A data de movimento não pode ser nula")

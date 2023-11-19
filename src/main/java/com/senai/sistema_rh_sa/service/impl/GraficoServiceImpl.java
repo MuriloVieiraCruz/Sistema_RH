@@ -64,20 +64,33 @@ public class GraficoServiceImpl implements GraficoService {
             LocalDate primeiroDiaDoMes = yearMonth.atDay(1);
             LocalDate ultimoDiaDoMes = yearMonth.atEndOfMonth();
 
-            Map<Integer, DadosDoGrafico> datasPorSemana = new HashMap<>();
             LocalDate dataAtual = primeiroDiaDoMes;
 
             while (!dataAtual.isAfter(ultimoDiaDoMes) && indice < repasses.size()) {
 
-                int semanaDoMes = (dataAtual.getDayOfMonth() - 1) / 7 + 1;
-                DadosDoGrafico dados = dadosConsoliados.getOrDefault(semanaDoMes, new DadosDoGrafico());
-                BigDecimal valorAtual = dados.getVolumeMovimentadoDeRepasses();
-                BigDecimal novoValor = valorAtual.add(repasses.get(indice).getValorBruto());
-                dados.setVolumeMovimentadoDeRepasses(novoValor);
+                int semanaDoMes = dataAtual.get(WeekFields.of(Locale.getDefault()).weekOfMonth());
 
-                dadosConsoliados.put(semanaDoMes, dados);
+                LocalDate dataMovimentacao = repasses.get(indice).getDataMoviementacao()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate();
+
+                if (dataMovimentacao.getDayOfMonth() == dataAtual.getDayOfMonth()) {
+                    DadosDoGrafico dados = dadosConsoliados.getOrDefault(semanaDoMes, new DadosDoGrafico());
+                    if (dados.getVolumeMovimentadoDeRepasses() == null) {
+                        dados.setVolumeMovimentadoDeRepasses(repasses.get(indice).getValorBruto());
+                        dados.setAno(ano);
+                        dados.setMes(mes);
+                    } else {
+                        BigDecimal valorAtual = dados.getVolumeMovimentadoDeRepasses();
+                        BigDecimal novoValor = valorAtual.add(repasses.get(indice).getValorBruto());
+                        dados.setVolumeMovimentadoDeRepasses(novoValor);
+                    }
+
+                    dadosConsoliados.put(semanaDoMes, dados);
+                    indice++;
+                }
+
                 dataAtual = dataAtual.plusDays(1);
-                indice++;
             }
 
             int totalSemanasNoMes = (ultimoDiaDoMes.getDayOfMonth() - 1) / 7 + 1;

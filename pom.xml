@@ -18,9 +18,17 @@
 		<guava.version>32.1.2-jre</guava.version>	
 		<org-json.version>20200518</org-json.version>
 		<apache-camel.version>4.0.0-M3</apache-camel.version>
+		<guava.version>32.1.2-jre</guava.version>
+		<org-json.version>20200518</org-json.version>
+		<jjwt.version>0.11.5</jjwt.version>
 	</properties>
 	<dependencies>
-		<dependency>
+	<dependency>
+		<groupId>com.google.guava</groupId>
+		<artifactId>guava</artifactId>
+		<version>${guava.version}</version>
+	</dependency>
+	<dependency>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-data-jpa</artifactId>
 	</dependency>
@@ -69,6 +77,25 @@
 		<groupId>org.apache.camel.springboot</groupId>
 		<artifactId>camel-http-starter</artifactId>
 		<version>${apache-camel.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-security</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>io.jsonwebtoken</groupId>
+		<artifactId>jjwt-api</artifactId>
+		<version>${jjwt.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>io.jsonwebtoken</groupId>
+		<artifactId>jjwt-impl</artifactId>
+		<version>${jjwt.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>io.jsonwebtoken</groupId>
+		<artifactId>jjwt-jackson</artifactId>
+		<version>${jjwt.version}</version>
 	</dependency>
 	</dependencies>
 

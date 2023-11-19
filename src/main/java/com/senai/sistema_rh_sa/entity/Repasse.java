@@ -22,7 +22,7 @@ public class Repasse {
     private Integer id;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
-    @NotNull(message = "A data de movimentação nõ pode ser nula")
+    @NotNull(message = "A data de movimentação não pode ser nula")
     @Column(name = "data_movimentacao")
     private Instant dataMoviementacao;
 

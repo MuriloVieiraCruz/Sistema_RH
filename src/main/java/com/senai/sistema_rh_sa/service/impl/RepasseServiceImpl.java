@@ -40,12 +40,12 @@ public class RepasseServiceImpl implements RepasseService {
             Repasse repasseDoEntregador = null;
             if (isEntregadorPresente){
                 repasseDoEntregador = repassesPorEntregador.get(entregador);
-                BigDecimal valorBrutoFinal = repasseDoEntregador.getValorBruto().add(frete.getFrete());
+                BigDecimal valorBrutoFinal = repasseDoEntregador.getValorBruto().add(frete.getValorTotal());
                 repasseDoEntregador.setValorBruto(valorBrutoFinal);
                 repasseDoEntregador.setQuantidadeDeEntregas(repasseDoEntregador.getQuantidadeDeEntregas() + 1);
             }else{
                 repasseDoEntregador = new Repasse();
-                repasseDoEntregador.setValorBruto(frete.getFrete());
+                repasseDoEntregador.setValorBruto(frete.getValorTotal());
                 repasseDoEntregador.setDataMoviementacao(frete.getDataMovimento());
                 repasseDoEntregador.setAno(ano);
                 repasseDoEntregador.setMes(mes);
@@ -59,13 +59,6 @@ public class RepasseServiceImpl implements RepasseService {
             re.setEntregador(e);
             repassesConsolidados.add(re);
         });
-
-        /*Collections.sort(repassesConsolidados, new Comparator<Repasse>() {
-            @Override
-            public int compare(Repasse repasse1, Repasse repasse2) {
-                return -Integer.compare(repasse1.getQuantidadeDeEntregas(), repasse2.getQuantidadeDeEntregas());
-            }
-        });*/
 
         for (Repasse repasse : repassesConsolidados){
             BigDecimal valorLiquido = repasse.getValorBruto().subtract(taxaDeSeguro);

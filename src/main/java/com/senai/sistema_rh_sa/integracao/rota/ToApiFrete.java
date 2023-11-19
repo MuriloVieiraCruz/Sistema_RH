@@ -1,19 +1,12 @@
-/*package com.senai.sistema_rh_sa.integracao.rota;
+/*
+package com.senai.sistema_rh_sa.integracao.rota;
 
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.senai.sistema_rh_sa.dto.Frete;
 import com.senai.sistema_rh_sa.integracao.processor.ErrorProcessor;
 
-import java.lang.reflect.Type;
-import java.util.List;
-
 import org.apache.camel.Exchange;
-import org.apache.camel.ExchangePattern;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.util.json.JsonObject;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,19 +30,30 @@ public class ToApiFrete extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
-        from("direct:enviarRequisicao")
+        from("direct:buscarFrete")
                 .doTry()
-                .to("direct:atenticacao")
+                .process(new Processor() {
+                    @Override
+                    public void process(Exchange exchange) throws Exception {
+                        String responseJson = exchange.getIn().getBody(String.class);
+                        JSONObject jsonObject = new JSONObject(responseJson);
+                        Integer ano = jsonObject.getInt("ano");
+                        Integer mes = jsonObject.getInt("mes");
+                        exchange.setProperty("ano", ano);
+                        exchange.setProperty("mes", mes);
+                    }
+                })
+                .to("direct:autenticacao")
                 .setHeader(Exchange.HTTP_METHOD, constant(HttpMethods.GET))
                 .setHeader(Exchange.CONTENT_TYPE, constant("application/json;charset=UTF-8"))
                 .setHeader("Authorization", simple("Bearer ${exchangeProperty.token}"))
-                .to(urlDeRequisicao)
+                .to(urlDeRequisicao + "/ano/${exchangeProperty.ano}/mes/${exchangeProperty.mes}")
                 .process(new Processor() {
                     @Override
                     public void process(Exchange exchange) throws Exception {
                         String jsonBody = exchange.getMessage().getBody(String.class);
-                        JSONObject jsonObject = new JSONObject(jsonBody);
-                        exchange.getMessage().setBody(jsonObject);
+                        JSONArray jsonArray = new JSONArray(jsonBody);
+                        exchange.getMessage().setBody(jsonArray);
                     }
                 })
                 .doCatch(Exception.class)
@@ -57,4 +61,5 @@ public class ToApiFrete extends RouteBuilder {
                 .process(errorProcessor)
                 .end();
     }
-}*/
+}
+*/

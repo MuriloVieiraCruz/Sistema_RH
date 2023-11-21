@@ -1,6 +1,6 @@
 package com.senai.sistema_rh_sa.service;
 
-import com.senai.sistema_rh_sa.dto.Entregador;
+import com.senai.sistema_rh_sa.dto.EntregadorDto;
 import com.senai.sistema_rh_sa.entity.enums.Status;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -14,8 +14,8 @@ public interface EntregadorService {
 
     public com.senai.sistema_rh_sa.entity.Entregador salvar(
             @Valid
-            @NotNull(message = "O entregador é obrigatório")
-            Entregador entregador);
+            @NotNull(message = "O entregadorDto é obrigatório")
+            EntregadorDto entregadorDto);
 
     public void alterarStatusPor(
             @Positive(message = "O ID deve ser maior que 0")

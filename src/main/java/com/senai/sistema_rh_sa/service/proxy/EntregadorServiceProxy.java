@@ -1,6 +1,6 @@
 package com.senai.sistema_rh_sa.service.proxy;
 
-import com.senai.sistema_rh_sa.dto.Entregador;
+import com.senai.sistema_rh_sa.dto.EntregadorDto;
 import com.senai.sistema_rh_sa.entity.enums.Status;
 import com.senai.sistema_rh_sa.service.EntregadorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,8 @@ public class EntregadorServiceProxy implements EntregadorService {
     private EntregadorService service;
 
     @Override
-    public com.senai.sistema_rh_sa.entity.Entregador salvar(Entregador entregador) {
-        return this.service.salvar(entregador);
+    public com.senai.sistema_rh_sa.entity.Entregador salvar(EntregadorDto entregadorDto) {
+        return this.service.salvar(entregadorDto);
     }
 
     @Override

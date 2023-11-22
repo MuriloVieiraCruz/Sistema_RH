@@ -16,4 +16,7 @@ public interface RepasseRepository extends JpaRepository<Repasse, Integer> {
             "AND (:mes IS NULL OR r.mes = :mes) ")
     public List<Repasse> buscarRepassesPorIntevaloDe(Integer ano, Integer mes);
 
+    @Query(value = "SELECT Count(r) FROM Repasse r WHERE r.entregador.id = :idDoEntregador")
+    public Integer contarRepassesVinculadosPor(Integer idDoEntregador);
+
 }

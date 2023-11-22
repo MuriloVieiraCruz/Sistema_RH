@@ -1,6 +1,7 @@
 package com.senai.sistema_rh_sa.service.proxy;
 
-import com.senai.sistema_rh_sa.dto.Entregador;
+import com.senai.sistema_rh_sa.dto.NovoEntregador;
+import com.senai.sistema_rh_sa.entity.Entregador;
 import com.senai.sistema_rh_sa.entity.enums.Status;
 import com.senai.sistema_rh_sa.service.EntregadorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,8 @@ public class EntregadorServiceProxy implements EntregadorService {
     private EntregadorService service;
 
     @Override
-    public com.senai.sistema_rh_sa.entity.Entregador salvar(Entregador entregador) {
-        return this.service.salvar(entregador);
+    public Entregador salvar(NovoEntregador novoEntregador) {
+        return this.service.salvar(novoEntregador);
     }
 
     @Override
@@ -27,17 +28,17 @@ public class EntregadorServiceProxy implements EntregadorService {
     }
 
     @Override
-    public com.senai.sistema_rh_sa.entity.Entregador excluirPor(Integer id) {
+    public Entregador excluirPor(Integer id) {
         return this.service.excluirPor(id);
     }
 
     @Override
-    public com.senai.sistema_rh_sa.entity.Entregador buscarPor(Integer id) {
+    public Entregador buscarPor(Integer id) {
         return this.service.buscarPor(id);
     }
 
     @Override
-    public Page<com.senai.sistema_rh_sa.entity.Entregador> listarPor(String nome, Pageable paginacao) {
+    public Page<Entregador> listarPor(String nome, Pageable paginacao) {
         return this.service.listarPor(nome, paginacao);
     }
 

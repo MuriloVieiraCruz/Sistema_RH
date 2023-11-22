@@ -5,6 +5,7 @@ import com.senai.sistema_rh_sa.entity.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -20,9 +21,11 @@ public interface EntregadorRepository extends JpaRepository<Entregador, Integer>
     @Query(value = "SELECT e FROM Entregador e WHERE e.numeroHabilitacao = :numeroHabilitacao ")
     public Entregador buscarPorCNH(String numeroHabilitacao);
 
-    @Query(value = "SELECT e FROM Entregador e WHERE Upper(e.nome) LIKE Upper(:nome) ")
+    @Query(value = "SELECT e FROM Entregador e WHERE Upper(e.nome) LIKE Upper(:nome) ",
+    countQuery = "SELECT Count(e) FROM Entregador e WHERE Upper(e.nome) LIKE Upper(:nome)")
     public Page<Entregador> listarPor(String nome, Pageable paginacao);
 
+    @Modifying
     @Query(value = "UPDATE Entregador e SET e.status = :status WHERE e.id = :id ")
     public void alterarStatusPor(Integer id, Status status);
 }

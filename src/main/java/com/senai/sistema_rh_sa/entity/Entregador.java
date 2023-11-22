@@ -39,7 +39,7 @@ public class Entregador {
     private Endereco endereco;
 
     @NotBlank(message = "O número da habilitação é obrigatório")
-    @Size(max = 9, min = 9, message = "O número da habilitação deve conter 10 caracteres")
+    @Size(max = 11, min = 11, message = "O número da habilitação deve conter 11 caracteres")
     @Column(name = "numero_habilitacao")
     @EqualsAndHashCode.Include
     private String numeroHabilitacao;

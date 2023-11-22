@@ -1,11 +1,7 @@
 package com.senai.sistema_rh_sa.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.senai.sistema_rh_sa.entity.Endereco;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Transient;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -13,7 +9,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.br.CPF;
 
 @Data
-public class Entregador {
+public class NovoEntregador {
 
     private Integer id;
 

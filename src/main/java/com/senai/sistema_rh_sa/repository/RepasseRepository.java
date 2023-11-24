@@ -19,4 +19,7 @@ public interface RepasseRepository extends JpaRepository<Repasse, Integer> {
     @Query(value = "SELECT Count(r) FROM Repasse r WHERE r.entregador.id = :idDoEntregador")
     public Integer contarRepassesVinculadosPor(Integer idDoEntregador);
 
+    @Query(value = "SELECT COUNT(r) > 0 FROM Repasse r WHERE r.ano = :ano AND (:mes IS NULL OR r.mes = :mes)")
+    public Boolean verificaBuscaPorDadosExistentesNoBanco(Integer ano, Integer mes);
+
 }

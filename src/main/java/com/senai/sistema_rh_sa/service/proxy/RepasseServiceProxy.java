@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.senai.sistema_rh_sa.dto.Frete;
 import com.senai.sistema_rh_sa.entity.Repasse;
+import com.senai.sistema_rh_sa.repository.RepasseRepository;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.ProducerTemplate;
 import org.json.JSONArray;
@@ -21,13 +22,22 @@ public class RepasseServiceProxy implements RepasseService {
 
     @Autowired
     @Qualifier("repasseServiceImpl")
-    private RepasseService repasseService;
+    private RepasseService service;
+
+    @Autowired
+    private RepasseRepository repository;
     
     @Autowired
     private ProducerTemplate toApiFrete;
 
     @Override
     public List<Repasse> calcularRepassesPor(Integer ano, Integer mes) {
+        Boolean isConsultaRepassesExistentes = repository.verificaBuscaPorDadosExistentesNoBanco(ano, mes);
+
+        if (isConsultaRepassesExistentes) {
+            return service.buscarRepassesExistentes(ano, mes);
+        }
+
         JSONObject requestBodyAnoMes = new JSONObject();
         requestBodyAnoMes.put("ano", ano);
         requestBodyAnoMes.put("mes", mes);
@@ -43,7 +53,8 @@ public class RepasseServiceProxy implements RepasseService {
             listaDeFretes.add(frete);
         }
 
-        List<Repasse> repasseList = this.repasseService.calcularRepassesPor(listaDeFretes, ano, mes);
+        List<Repasse> repasseList = this.service.calcularRepassesPor(listaDeFretes, ano, mes);
+
         return repasseList;
     }
 

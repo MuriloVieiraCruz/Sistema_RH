@@ -34,8 +34,19 @@ public interface RepasseService {
             Integer ano,
 
             @Range(min = 1, max = 12, message = "O mês deve estar entre 1 e 12")
-            @NotNull(message = "A mês é obrigatório")
+            @NotNull(message = "O mês é obrigatório")
             Integer mes){
+        throw new MetodoNaoSuportadoException("Este método não é suportado para para a operação atual");
+    }
+
+    default public List<Repasse> buscarRepassesExistentes(
+            @Positive(message = "O ano deve ser positivo")
+            @NotNull(message = "A ano é obrigatório")
+            Integer ano,
+
+            @Range(min = 1, max = 12, message = "O mês deve estar entre 1 e 12")
+            @NotNull(message = "A mês é obrigatório")
+            Integer mes) {
         throw new MetodoNaoSuportadoException("Este método não é suportado para para a operação atual");
     }
 }

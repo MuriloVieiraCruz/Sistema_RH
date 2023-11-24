@@ -6,6 +6,10 @@ import com.senai.sistema_rh_sa.entity.Repasse;
 import com.senai.sistema_rh_sa.repository.RepasseRepository;
 import com.senai.sistema_rh_sa.service.EntregadorService;
 import com.senai.sistema_rh_sa.service.RepasseService;
+import com.senai.sistema_rh_sa.service.exception.MetodoNaoSuportadoException;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +24,6 @@ public class RepasseServiceImpl implements RepasseService {
     @Autowired
     @Qualifier("entregadorServiceImpl")
     private EntregadorService entregadorService;
-
     @Autowired
     private RepasseRepository repository;
     @Value("${taxa-seguro}")
@@ -73,4 +76,11 @@ public class RepasseServiceImpl implements RepasseService {
         }
         return repassesConsolidados;
     }
+
+    @Override
+    public List<Repasse> buscarRepassesExistentes(Integer ano, Integer mes) {
+        return repository.buscarRepassesPorIntevaloDe(ano, mes);
+    }
+
+
 }

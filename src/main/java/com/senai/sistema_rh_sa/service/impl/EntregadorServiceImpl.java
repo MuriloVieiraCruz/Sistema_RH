@@ -6,6 +6,7 @@ import com.senai.sistema_rh_sa.entity.Endereco;
 import com.senai.sistema_rh_sa.entity.Entregador;
 import com.senai.sistema_rh_sa.entity.enums.Status;
 import com.senai.sistema_rh_sa.repository.EntregadorRepository;
+import com.senai.sistema_rh_sa.repository.RepasseRepository;
 import com.senai.sistema_rh_sa.service.EntregadorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,9 @@ public class EntregadorServiceImpl implements EntregadorService {
 
     @Autowired
     private EntregadorRepository repository;
+
+    @Autowired
+    private RepasseRepository repasseRepository;
 
     @Override
     public Entregador salvar(NovoEntregador novoEntregadorDto) {
@@ -34,9 +38,7 @@ public class EntregadorServiceImpl implements EntregadorService {
         entregador.setTelefone(novoEntregadorDto.getTelefone());
         entregador.setNumeroHabilitacao(novoEntregadorDto.getNumeroHabilitacao());
         entregador.setSeguroDeVida(novoEntregadorDto.getSeguroDeVida());
-        this.verificaCpf(entregador);
-        this.verificaTelefone(entregador);
-        this.verificaCNH(entregador);
+        this.verificaDados(entregador);
         Entregador entregadorSalvo = this.repository.saveAndFlush(entregador);
         return entregadorSalvo;
     }
@@ -56,6 +58,9 @@ public class EntregadorServiceImpl implements EntregadorService {
     public Entregador excluirPor(Integer id) {
         Entregador entregadorEncontrado = buscarPor(id);
         repository.deleteById(entregadorEncontrado.getId());
+        Integer qtdeDeRepassesVinculados = repasseRepository.contarRepassesVinculadosPor(id);
+        Preconditions.checkArgument(qtdeDeRepassesVinculados >= 1,
+                "O entregador está vinculado a um repasse e não pode ser excluído");
         return entregadorEncontrado;
     }
 
@@ -75,38 +80,24 @@ public class EntregadorServiceImpl implements EntregadorService {
         return repository.listarPor(nome, paginacao);
     }
 
-    private void verificaCpf(Entregador entregador) {
+    private void verificaDados(Entregador entregador) {
         Entregador entregadorEncontrado = repository.buscarPorCPF(entregador.getCpf());
-        if (entregadorEncontrado != null) {
-            if (entregador.isPersisted()) {
-                Preconditions.checkArgument(entregadorEncontrado.equals(entregador),
-                        "O CPF informado já existe");
-            } else {
-                throw new IllegalArgumentException("O CPF informado já existe");
-            }
-        }
+        verificaIgualdade(entregador, entregadorEncontrado, "O CPF informado já existe");
+
+        entregadorEncontrado = repository.buscarPorCNH(entregador.getNumeroHabilitacao());
+        verificaIgualdade(entregador, entregadorEncontrado, "A CNH informada já existe");
+
+        entregadorEncontrado = repository.buscarPorCNH(entregador.getNumeroHabilitacao());
+        verificaIgualdade(entregador, entregadorEncontrado, "O telefone informado já existe");
     }
 
-    private void verificaTelefone(Entregador entregador) {
-        Entregador entregadorEncontrado = repository.buscarPorTelefone(entregador.getTelefone());
+    private void verificaIgualdade(Entregador entregador, Entregador entregadorEncontrado, String mensagemErro) {
         if (entregadorEncontrado != null) {
             if (entregador.isPersisted()) {
                 Preconditions.checkArgument(entregadorEncontrado.equals(entregador),
-                        "O Telefone informado já existe");
+                        mensagemErro);
             } else {
-                throw new IllegalArgumentException("O Telefone informado já existe");
-            }
-        }
-    }
-
-    private void verificaCNH(Entregador entregador) {
-        Entregador entregadorEncontrado = repository.buscarPorCNH(entregador.getNumeroHabilitacao());
-        if (entregadorEncontrado != null) {
-            if (entregador.isPersisted()) {
-                Preconditions.checkArgument(entregadorEncontrado.equals(entregador),
-                        "O número da habilitação informado já existe");
-            } else {
-                throw new IllegalArgumentException("O número da habilitação informado já existe");
+                throw new IllegalArgumentException(mensagemErro);
             }
         }
     }

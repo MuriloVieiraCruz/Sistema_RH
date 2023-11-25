@@ -36,5 +36,5 @@ public interface EntregadorService {
             @NotNull(message = "O ID é obrigatório")
             Integer id);
 
-    public Page<Entregador> listarPor(String nome, Pageable paginacao);
+    public Page<Entregador> listarPor(String nome, String cpf, String cnh, String telefone, Pageable paginacao);
 }

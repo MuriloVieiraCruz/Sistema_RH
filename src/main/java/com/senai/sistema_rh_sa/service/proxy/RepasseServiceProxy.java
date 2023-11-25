@@ -1,11 +1,15 @@
 package com.senai.sistema_rh_sa.service.proxy;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.senai.sistema_rh_sa.dto.Frete;
 import com.senai.sistema_rh_sa.entity.Repasse;
 import com.senai.sistema_rh_sa.repository.RepasseRepository;
+import com.senai.sistema_rh_sa.service.impl.JReportServiceImpl;
+import jakarta.servlet.http.HttpServletResponse;
+import net.sf.jasperreports.engine.JRException;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.ProducerTemplate;
 import org.json.JSONArray;
@@ -30,12 +34,15 @@ public class RepasseServiceProxy implements RepasseService {
     @Autowired
     private ProducerTemplate toApiFrete;
 
+    @Autowired
+    private JReportServiceImpl jReportService;
+
     @Override
-    public List<Repasse> calcularRepassesPor(Integer ano, Integer mes) {
+    public void calcularRepassesPor(HttpServletResponse response, Integer ano, Integer mes) {
         Boolean isConsultaRepassesExistentes = repository.verificaBuscaPorDadosExistentesNoBanco(ano, mes);
 
         if (isConsultaRepassesExistentes) {
-            return service.buscarRepassesExistentes(ano, mes);
+            service.buscarRepassesExistentes(response, ano, mes);
         }
 
         JSONObject requestBodyAnoMes = new JSONObject();
@@ -53,9 +60,6 @@ public class RepasseServiceProxy implements RepasseService {
             listaDeFretes.add(frete);
         }
 
-        List<Repasse> repasseList = this.service.calcularRepassesPor(listaDeFretes, ano, mes);
-
-        return repasseList;
+        this.service.calcularRepassesPor(response, listaDeFretes, ano, mes);
     }
-
 }

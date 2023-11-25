@@ -21,9 +21,19 @@ public interface EntregadorRepository extends JpaRepository<Entregador, Integer>
     @Query(value = "SELECT e FROM Entregador e WHERE e.numeroHabilitacao = :numeroHabilitacao ")
     public Entregador buscarPorCNH(String numeroHabilitacao);
 
-    @Query(value = "SELECT e FROM Entregador e WHERE Upper(e.nome) LIKE Upper(:nome) ",
-    countQuery = "SELECT Count(e) FROM Entregador e WHERE Upper(e.nome) LIKE Upper(:nome)")
-    public Page<Entregador> listarPor(String nome, Pageable paginacao);
+    @Query(value = "SELECT e "
+            + "FROM Entregador e "
+            + "WHERE Upper(e.nome) LIKE Upper(:nome) "
+            + "AND (:cpf IS NULL OR e.cpf = :cpf) "
+            + "AND (:numeroHabilitacao IS NULL OR e.numeroHabilitacao = :numeroHabilitacao) "
+            + "AND (:telefone IS NULL OR e.telefone = :telefone)",
+    countQuery = "SELECT e "
+            + "FROM Entregador e "
+            + "WHERE Upper(e.nome) LIKE Upper(:nome) "
+            + "AND (:cpf IS NULL OR e.cpf = :cpf) "
+            + "AND (:numeroHabilitacao IS NULL OR e.numeroHabilitacao = :numeroHabilitacao) "
+            + "AND (:telefone IS NULL OR e.telefone = :telefone)")
+    public Page<Entregador> listarPor(String nome, String cpf, String numeroHabilitacao, String telefone, Pageable paginacao);
 
     @Modifying
     @Query(value = "UPDATE Entregador e SET e.status = :status WHERE e.id = :id ")

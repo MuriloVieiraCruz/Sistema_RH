@@ -1,6 +1,5 @@
 package com.senai.sistema_rh_sa.controller;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.senai.sistema_rh_sa.dto.NovoEntregador;
 import com.senai.sistema_rh_sa.entity.Entregador;
@@ -16,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/entregadores")
@@ -62,6 +62,9 @@ public class EntregadorController {
     @GetMapping
     public ResponseEntity<?> listBy(
             @RequestParam("nome") String nome,
+            @RequestParam("cpf") String cpf,
+            @RequestParam("cnh") String cnh,
+            @RequestParam("telefone") String telefone,
             @RequestParam("pagina") Optional<Integer> pagina) {
         Pageable paginacao = null;
         if (pagina.isPresent()) {
@@ -70,7 +73,7 @@ public class EntregadorController {
             paginacao = PageRequest.of(0, 20);
         }
 
-        Page<Entregador> entregadores = service.listarPor(nome, paginacao);
+        Page<Entregador> entregadores = service.listarPor(nome, cpf, cnh, telefone, paginacao);
         return ResponseEntity.ok(converter.toJsonList(entregadores));
     }
 

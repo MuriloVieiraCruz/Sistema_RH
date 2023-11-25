@@ -76,8 +76,8 @@ public class EntregadorServiceImpl implements EntregadorService {
     }
 
     @Override
-    public Page<Entregador> listarPor(String nome, Pageable paginacao) {
-        return repository.listarPor(nome, paginacao);
+    public Page<Entregador> listarPor(String nome, String cpf, String cnh, String telefone, Pageable paginacao) {
+        return repository.listarPor(nome, cpf, cnh, telefone, paginacao);
     }
 
     private void verificaDados(Entregador entregador) {

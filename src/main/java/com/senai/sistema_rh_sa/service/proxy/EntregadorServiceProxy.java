@@ -38,8 +38,8 @@ public class EntregadorServiceProxy implements EntregadorService {
     }
 
     @Override
-    public Page<Entregador> listarPor(String nome, Pageable paginacao) {
-        return this.service.listarPor(nome, paginacao);
+    public Page<Entregador> listarPor(String nome, String cpf, String cnh, String telefone, Pageable paginacao) {
+        return this.service.listarPor(nome, cpf, cnh, telefone, paginacao);
     }
 
 }

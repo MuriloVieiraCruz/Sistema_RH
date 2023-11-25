@@ -29,4 +29,6 @@ public class AutenticacaoServiceProxy implements AutenticacaoService {
         String token = jsonObject.getString("token");
         return token;
     }
+
+
 }

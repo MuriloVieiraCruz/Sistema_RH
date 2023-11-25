@@ -71,6 +71,8 @@ public class ApiSecurityConfig {
 							.permitAll()
 							.requestMatchers("/entregadores/**")
 							.permitAll()
+							.requestMatchers("/**")
+							.permitAll()
 						.anyRequest().authenticated())
 			.sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authenticationProvider(authenticationProvider())

@@ -34,15 +34,13 @@ public class RepasseServiceProxy implements RepasseService {
     @Autowired
     private ProducerTemplate toApiFrete;
 
-    @Autowired
-    private JReportServiceImpl jReportService;
-
     @Override
-    public void calcularRepassesPor(HttpServletResponse response, Integer ano, Integer mes) {
+    public List<Repasse> calcularRepassesPor(Integer ano, Integer mes) {
         Boolean isConsultaRepassesExistentes = repository.verificaBuscaPorDadosExistentesNoBanco(ano, mes);
 
         if (isConsultaRepassesExistentes) {
-            service.buscarRepassesExistentes(response, ano, mes);
+            List<Repasse> repasses = service.buscarRepassesExistentes(ano, mes);
+            return repasses;
         }
 
         JSONObject requestBodyAnoMes = new JSONObject();
@@ -60,6 +58,7 @@ public class RepasseServiceProxy implements RepasseService {
             listaDeFretes.add(frete);
         }
 
-        this.service.calcularRepassesPor(response, listaDeFretes, ano, mes);
+        List<Repasse> repasses = this.service.calcularRepassesPor(listaDeFretes, ano, mes);
+        return repasses;
     }
 }

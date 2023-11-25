@@ -15,8 +15,7 @@ import java.util.List;
 @Validated
 public interface RepasseService {
 
-    default public void calcularRepassesPor(
-            HttpServletResponse response,
+    default public List<Repasse> calcularRepassesPor(
             @Positive(message = "O ano deve ser positivo")
             @NotNull(message = "A ano é obrigatório")
             Integer ano,
@@ -27,8 +26,7 @@ public interface RepasseService {
         throw new MetodoNaoSuportadoException("Este método não é suportado para para a operação atual");
     }
 
-    default public void calcularRepassesPor(
-            HttpServletResponse response,
+    default public List<Repasse> calcularRepassesPor(
             @NotNull(message = "A lista de entregas é obrigatório")
             List<Frete> entregas,
 
@@ -42,8 +40,7 @@ public interface RepasseService {
         throw new MetodoNaoSuportadoException("Este método não é suportado para para a operação atual");
     }
 
-    default public void buscarRepassesExistentes(
-            HttpServletResponse response,
+    default public List<Repasse> buscarRepassesExistentes(
             @Positive(message = "O ano deve ser positivo")
             @NotNull(message = "A ano é obrigatório")
             Integer ano,

@@ -1,6 +1,7 @@
 package com.senai.sistema_rh_sa.controller;
 
 import com.senai.sistema_rh_sa.dto.Filtro;
+import com.senai.sistema_rh_sa.entity.Repasse;
 import com.senai.sistema_rh_sa.service.RepasseService;
 import com.senai.sistema_rh_sa.service.impl.JReportServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/repasses")
@@ -23,9 +25,14 @@ public class RepasseController {
     @Qualifier("repasseServiceProxy")
     private RepasseService service;
 
+    @Autowired
+    private JReportServiceImpl jReportService;
+
     @PostMapping()
-    private void gerarRelatorioPor(HttpServletResponse response, @RequestBody Filtro filtro) throws JRException, IOException {
-        service.calcularRepassesPor(response, filtro.getAno(), filtro.getMes());
-        //TODO implementar o retorno do relatório aqui
+    private String gerarRelatorioPor(HttpServletResponse response, @RequestBody Filtro filtro) throws JRException, IOException {
+        List<Repasse> repasses = service.calcularRepassesPor(filtro.getAno(), filtro.getMes());
+        String relatorioPdf = jReportService.exportJasperReport(response, repasses);
+
+        return relatorioPdf;
     }
 }

@@ -36,11 +36,8 @@ public class RepasseServiceImpl implements RepasseService {
     @Value("${percentual-bonificacao}")
     private BigDecimal percentualDeBonificacao;
 
-    @Autowired
-    private JReportServiceImpl jReportService;
-
     @Override
-    public void calcularRepassesPor(HttpServletResponse response, List<Frete> freteList, Integer ano, Integer mes) {
+    public List<Repasse> calcularRepassesPor(List<Frete> freteList, Integer ano, Integer mes) {
 
         Map<Entregador, Repasse> repassesPorEntregador = new HashMap<>();
 
@@ -82,41 +79,11 @@ public class RepasseServiceImpl implements RepasseService {
             repository.save(repasse);
         }
 
-        response.setContentType("application/pdf");
-        DateFormat formatador = new SimpleDateFormat("dd/MM/yyyy");
-        String dataHoraAtual = formatador.format(new Date());
-
-        String chaveCabecalho = "Content-Disposition";
-        String valorCabecalho = "attachment; filename=pdf" + dataHoraAtual + ".pdf";
-        response.setHeader(chaveCabecalho, valorCabecalho);
-
-        try {
-            jReportService.exportJasperReport(response, repassesConsolidados);
-        } catch (JRException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return repassesConsolidados;
     }
 
     @Override
-    public void buscarRepassesExistentes(HttpServletResponse response, Integer ano, Integer mes) {
-        List<Repasse> repasses = repository.buscarRepassesPorIntevaloDe(ano, mes);
-
-        response.setContentType("application/pdf");
-        DateFormat formatador = new SimpleDateFormat("dd/MM/yyyy");
-        String dataHoraAtual = formatador.format(new Date());
-
-        String chaveCabecalho = "Content-Disposition";
-        String valorCabecalho = "attachment; filename=pdf" + dataHoraAtual + ".pdf";
-        response.setHeader(chaveCabecalho, valorCabecalho);
-
-        try {
-            jReportService.exportJasperReport(response, repasses);
-        } catch (JRException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public List<Repasse> buscarRepassesExistentes(Integer ano, Integer mes) {
+        return repository.buscarRepassesPorIntevaloDe(ano, mes);
     }
 }

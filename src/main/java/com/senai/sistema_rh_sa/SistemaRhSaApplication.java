@@ -22,9 +22,6 @@ public class SistemaRhSaApplication {
     @Bean
     public CommandLineRunner commandLineRunner() {
         return args -> {
-
-            proxy.autenticarUsuario("pedido@gmail.com", "12345678");
-
             System.out.println("The system started");
         };
     }

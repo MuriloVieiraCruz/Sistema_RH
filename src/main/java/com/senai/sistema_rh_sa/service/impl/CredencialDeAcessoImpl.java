@@ -13,10 +13,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class CredencialDeAcessoImpl implements UserDetailsService{
 
-	@Value("login.usuario.salvo")
+	@Value("${login.usuario}")
 	private String loginSalvo;
 
-	@Value("senha.usuario.salvo")
+	@Value("${senha.usuario}")
 	private String senhaSalva;
 
 	@Override

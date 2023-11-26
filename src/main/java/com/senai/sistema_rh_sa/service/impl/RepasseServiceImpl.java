@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -46,6 +47,7 @@ public class RepasseServiceImpl implements RepasseService {
             Entregador entregador = entregadorService.buscarPor(frete.getIdEntregador());
             boolean isEntregadorPresente = repassesPorEntregador.get(entregador) != null;
             Repasse repasseDoEntregador = null;
+
             if (isEntregadorPresente){
                 repasseDoEntregador = repassesPorEntregador.get(entregador);
                 BigDecimal valorBrutoFinal = repasseDoEntregador.getValorBruto().add(frete.getValorTotal());
@@ -68,11 +70,11 @@ public class RepasseServiceImpl implements RepasseService {
         });
 
         for (Repasse repasse : repassesConsolidados){
-            BigDecimal valorLiquido = repasse.getValorBruto().subtract(taxaDeSeguro);
+            BigDecimal valorLiquido = repasse.getValorBruto().subtract(taxaDeSeguro).setScale(2, RoundingMode.CEILING);
             BigDecimal divisor = new BigDecimal(100);
             BigDecimal percentual = percentualDeBonificacao.divide(divisor);
             BigDecimal valorBonificacao = valorLiquido.multiply(percentual);
-            BigDecimal valorLiquidoFinal = valorLiquido.add(valorBonificacao);
+            BigDecimal valorLiquidoFinal = valorLiquido.add(valorBonificacao).setScale(2, RoundingMode.CEILING);
             repasse.setValorLiquido(valorLiquidoFinal);
             repasse.setBonificacao(percentualDeBonificacao);
             repasse.setTaxaSeguroDeVida(taxaDeSeguro);

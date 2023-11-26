@@ -33,7 +33,7 @@ public class Repasse {
     private Instant dataPagamento;
 
     @DecimalMin(value = "0.0", inclusive = true, message = "O valor bruto precisa ser positivo")
-    @Digits(integer = 6, fraction = 2, message = "O valor bruto precisa conter o formato 'NNNNNN.NN'")
+    @Digits(integer = 5, fraction = 2, message = "O valor bruto precisa conter o formato 'NNNNNN.NN'")
     @NotNull(message = "O valor bruto não pode ser nulo")
     @Column(name = "valor_bruto")
     private BigDecimal valorBruto;
@@ -44,13 +44,15 @@ public class Repasse {
     @Column(name = "valor_liquido")
     private BigDecimal valorLiquido;
 
-    @Range(max = 4, min = 4, message = "O formato do ano está incorreto")
+    //@Min(value = 4, message = "O ano deve conter o formato NNNN")
+    //@Max(value = 4, message = "O ano deve conter o formato NNNN")
     @Positive(message = "O ano deve ser positivo")
     @NotNull(message = "O ano é obrigatório")
     @Column(name = "ano")
     private Integer ano;
 
-    @Range(max = 2, message = "O formato do mês está incorreto")
+    @Min(value = 1, message = "O mês deve ser maior ou igual a 1")
+    @Max(value = 12, message = "O mês deve ser menor ou igual a 12")
     @Positive(message = "O mês deve ser positivo")
     @NotNull(message = "O mês é obrigatório")
     @Column(name = "mes")

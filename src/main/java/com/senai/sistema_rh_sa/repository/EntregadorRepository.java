@@ -35,6 +35,9 @@ public interface EntregadorRepository extends JpaRepository<Entregador, Integer>
             + "AND (:telefone IS NULL OR e.telefone = :telefone)")
     public Page<Entregador> listarPor(String nome, String cpf, String numeroHabilitacao, String telefone, Pageable paginacao);
 
+    @Query(value = "SELECT e.id FROM Entregador e WHERE e.email = :email ")
+    public Integer buscarIdPor(String email);
+
     @Modifying
     @Query(value = "UPDATE Entregador e SET e.status = :status WHERE e.id = :id ")
     public void alterarStatusPor(Integer id, Status status);

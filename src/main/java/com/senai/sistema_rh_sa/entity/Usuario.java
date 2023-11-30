@@ -10,11 +10,10 @@ import lombok.Data;
 @AllArgsConstructor
 public class Usuario {
 
-    @Size(max = 50, message = "O login do usuário não deve conter mais do que 50 caracteres")
+    @Size(max = 100, message = "O login do usuário não deve conter mais do que 100 caracteres")
     @NotBlank(message = "O login do usuário é obrigatório")
     private String login;
 
     @NotBlank(message = "A senha do usuário é obrigatória")
-    @Column(name = "senha")
     private String senha;
 }

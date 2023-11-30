@@ -5,6 +5,7 @@ import com.senai.sistema_rh_sa.entity.enums.Papel;
 import com.senai.sistema_rh_sa.entity.enums.Status;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -32,6 +33,10 @@ public class Entregador {
     @CPF(message = "O CPF está inválido")
     @Column(name = "cpf")
     private String cpf;
+
+    @Email(message = "O formato do e-mail está inválido")
+    @Column(name = "email")
+    private String email;
 
     @Embedded
     @Valid

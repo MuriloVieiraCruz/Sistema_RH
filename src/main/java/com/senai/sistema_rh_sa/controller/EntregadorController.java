@@ -59,6 +59,12 @@ public class EntregadorController {
         return ResponseEntity.ok(converter.toJsonMap(entregadorEncontrado));
     }
 
+    @GetMapping("/email/{email}")
+    public ResponseEntity<?> searchBy(@PathVariable("email") String email) {
+        Integer idEntregador = service.buscarIdPor(email);
+        return ResponseEntity.ok(converter.toJsonMap(idEntregador));
+    }
+
     @GetMapping
     public ResponseEntity<?> listBy(
             @RequestParam("nome") String nome,

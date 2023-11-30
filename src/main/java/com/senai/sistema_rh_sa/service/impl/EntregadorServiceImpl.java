@@ -76,6 +76,14 @@ public class EntregadorServiceImpl implements EntregadorService {
     }
 
     @Override
+    public Integer buscarIdPor(String email) {
+        Integer idEntregador = repository.buscarIdPor(email);
+        Preconditions.checkArgument(idEntregador != null && idEntregador > 0,
+                "Não foi encontrado entregador com o e-mail vinculado");
+        return idEntregador;
+    }
+
+    @Override
     public Page<Entregador> listarPor(String nome, String cpf, String cnh, String telefone, Pageable paginacao) {
         return repository.listarPor(nome, cpf, cnh, telefone, paginacao);
     }

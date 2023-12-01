@@ -33,10 +33,10 @@ public interface EntregadorRepository extends JpaRepository<Entregador, Integer>
     countQuery = "SELECT e "
             + "FROM Entregador e "
             + "WHERE Upper(e.nome) LIKE Upper(:nome) "
-            + "AND (:cpf IS NULL OR e.cpf = :cpf) "
-            + "AND (:email IS NULL OR e.email = :email) "
-            + "AND (:numeroHabilitacao IS NULL OR e.numeroHabilitacao = :numeroHabilitacao) "
-            + "AND (:telefone IS NULL OR e.telefone = :telefone)")
+            + "AND :cpf IS NULL OR e.cpf = :cpf "
+            + "AND :email IS NULL OR e.email = :email "
+            + "AND :numeroHabilitacao IS NULL OR e.numeroHabilitacao = :numeroHabilitacao "
+            + "AND :telefone IS NULL OR e.telefone = :telefone")
     public Page<Entregador> listarPor(
             String nome,
             String cpf,

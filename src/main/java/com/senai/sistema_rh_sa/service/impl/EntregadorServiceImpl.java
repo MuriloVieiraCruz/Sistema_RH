@@ -79,10 +79,10 @@ public class EntregadorServiceImpl implements EntregadorService {
             Optional<String> telefone,
             Pageable paginacao) {
 
-        String cpfValidado = cpf.equals("") ? null : cpf.get();
-        String emailValidado = cpf.equals("") ? null : email.get();
-        String numeroHabilitacaoValidado = cpf.equals("") ? null : numeroHabilitacao.get();
-        String telefoneValidado = cpf.equals("") ? null : telefone.get();
+        String cpfValidado = cpf.get().equals("") ? null : cpf.get();
+        String emailValidado = email.get().equals("") ? null : email.get();
+        String numeroHabilitacaoValidado = numeroHabilitacao.get().equals("") ? null : numeroHabilitacao.get();
+        String telefoneValidado = telefone.get().equals("") ? null : telefone.get();
 
         return repository.listarPor("%" + nome + "%", cpfValidado, emailValidado, numeroHabilitacaoValidado, telefoneValidado, paginacao);
     }

@@ -1,8 +1,7 @@
 package com.senai.sistema_rh_sa.controller;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.senai.sistema_rh_sa.dto.Entregador;
+import com.senai.sistema_rh_sa.entity.Entregador;
 import com.senai.sistema_rh_sa.entity.enums.Status;
 import com.senai.sistema_rh_sa.service.EntregadorService;
 import jakarta.transaction.Transactional;
@@ -15,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/entregador")
@@ -32,8 +32,8 @@ public class EntregadorController {
     public ResponseEntity<?> salvar(@RequestBody Entregador entregador) {
         Preconditions.checkArgument(!entregador.isPersisted(),
                 "O entregador não pode conter ID na inserção");
-        com.senai.sistema_rh_sa.entity.Entregador entregadorSalvo = service.salvar(entregador);
-        return ResponseEntity.created(URI.create("/entregador/id" + entregadorSalvo.getId())).build();
+        Entregador entregadorSalvo = service.salvar(entregador);
+        return ResponseEntity.created(URI.create("/entregador/id/" + entregadorSalvo.getId())).build();
     }
 
     @PutMapping
@@ -41,7 +41,7 @@ public class EntregadorController {
     public ResponseEntity<?> alterar(@RequestBody Entregador entregador) {
         Preconditions.checkArgument(entregador.isPersisted(),
                 "O entregador precisa ter um ID para alteração");
-        com.senai.sistema_rh_sa.entity.Entregador entregadorAlterado = service.salvar(entregador);
+        Entregador entregadorAlterado = service.salvar(entregador);
         return ResponseEntity.ok(converter.toJsonMap(entregadorAlterado));
     }
 
@@ -49,36 +49,44 @@ public class EntregadorController {
     @Transactional
     public ResponseEntity<?> atualizarStatusPor(@PathVariable("id") Integer id, @PathVariable("status") Status status) {
         this.service.alterarStatusPor(id, status);
-
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<?> searchBy(@PathVariable("id") Integer id) {
-        com.senai.sistema_rh_sa.entity.Entregador entregadorEncontrado = service.buscarPor(id);
+    public ResponseEntity<?> buscarPor(@PathVariable("id") Integer id) {
+        Entregador entregadorEncontrado = service.buscarPor(id);
         return ResponseEntity.ok(converter.toJsonMap(entregadorEncontrado));
     }
 
+    @GetMapping("/email/{email}")
+    public ResponseEntity<?> buscarPor(@PathVariable("email") String email) {
+        Integer idEntregador = service.buscarIdPor(email);
+        return ResponseEntity.ok(converter.toJsonMap(idEntregador));
+    }
+
     @GetMapping
-    public ResponseEntity<?> listBy(
+    public ResponseEntity<?> listarPor(
             @RequestParam("nome") String nome,
-            @RequestParam("page") Optional<Integer> page) {
+            @RequestParam("cpf") Optional<String> cpf,
+            @RequestParam("email") Optional<String> email,
+            @RequestParam("numeroHabilitacao") Optional<String> numeroHabilitacao,
+            @RequestParam("telefone") Optional<String> telefone,
+            @RequestParam("pagina") Optional<Integer> pagina) {
         Pageable paginacao = null;
-        if (page.isPresent()) {
-            paginacao = PageRequest.of(page.get(), 20);
+        if (pagina.isPresent()) {
+            paginacao = PageRequest.of(pagina.get(), 20);
         } else {
             paginacao = PageRequest.of(0, 20);
         }
 
-        Page<com.senai.sistema_rh_sa.entity.Entregador> entregadores = service.listarPor(nome, paginacao);
+        Page<Entregador> entregadores = service.listarPor(nome, cpf, email, numeroHabilitacao, telefone, paginacao);
         return ResponseEntity.ok(converter.toJsonList(entregadores));
     }
 
     @DeleteMapping("id/{id}")
     @Transactional
-    public ResponseEntity<?> excludeBy(@PathVariable("id") Integer id) {
-        com.senai.sistema_rh_sa.entity.Entregador entregadorExcluido = service.excluirPor(id);
-
+    public ResponseEntity<?> excluirPor(@PathVariable("id") Integer id) {
+        Entregador entregadorExcluido = service.excluirPor(id);
         return ResponseEntity.ok(converter.toJsonMap(entregadorExcluido));
     }
 }

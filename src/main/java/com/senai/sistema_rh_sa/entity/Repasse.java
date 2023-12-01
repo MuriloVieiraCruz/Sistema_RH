@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.validator.constraints.Range;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -22,7 +23,7 @@ public class Repasse {
     private Integer id;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
-    @NotNull(message = "A data de movimentação nõ pode ser nula")
+    @NotNull(message = "A data de movimentação não pode ser nula")
     @Column(name = "data_movimentacao")
     private Instant dataMoviementacao;
 
@@ -32,7 +33,7 @@ public class Repasse {
     private Instant dataPagamento;
 
     @DecimalMin(value = "0.0", inclusive = true, message = "O valor bruto precisa ser positivo")
-    @Digits(integer = 6, fraction = 2, message = "O valor bruto precisa conter o formato 'NNNNNN.NN'")
+    @Digits(integer = 5, fraction = 2, message = "O valor bruto precisa conter o formato 'NNNNNN.NN'")
     @NotNull(message = "O valor bruto não pode ser nulo")
     @Column(name = "valor_bruto")
     private BigDecimal valorBruto;
@@ -43,11 +44,15 @@ public class Repasse {
     @Column(name = "valor_liquido")
     private BigDecimal valorLiquido;
 
+    //@Min(value = 4, message = "O ano deve conter o formato NNNN")
+    //@Max(value = 4, message = "O ano deve conter o formato NNNN")
     @Positive(message = "O ano deve ser positivo")
     @NotNull(message = "O ano é obrigatório")
     @Column(name = "ano")
     private Integer ano;
 
+    @Min(value = 1, message = "O mês deve ser maior ou igual a 1")
+    @Max(value = 12, message = "O mês deve ser menor ou igual a 12")
     @Positive(message = "O mês deve ser positivo")
     @NotNull(message = "O mês é obrigatório")
     @Column(name = "mes")
@@ -68,20 +73,14 @@ public class Repasse {
     @Column(name = "taxa_seguro_de_vida")
     private BigDecimal taxaSeguroDeVida;
 
-    @DecimalMin(value = "0.0", inclusive = false, message = "O percentual de seguro não pode ser inferior a 0.01%")
-    @DecimalMax(value = "100.0", inclusive = false, message = "O percentual de seguro não pode ser superior a 100.00%")
-    @Digits(integer = 2, fraction = 2, message = "O percentual de seguro deve possuir o formato 'NN.NN'")
-    @Column(name = "percentual_seguro_de_vida")
-    private BigDecimal percentualSeguroDeVida;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull(message = "O entregador é obrigatório")
     @JoinColumn(name = "entregador_id")
     private Entregador entregador;
 
     public Repasse() {
-        this.percentualSeguroDeVida = new BigDecimal(7);
-        this.dataMoviementacao = Instant.now();
+        this.quantidadeDeEntregas = 1;
+        this.valorBruto = new BigDecimal(0);
         this.dataPagamento = Instant.now();
     }
 }

@@ -1,9 +1,11 @@
 package com.senai.sistema_rh_sa.service.impl;
 
 import com.google.common.base.Preconditions;
-import com.senai.sistema_rh_sa.dto.Entregador;
+import com.senai.sistema_rh_sa.entity.Endereco;
+import com.senai.sistema_rh_sa.entity.Entregador;
 import com.senai.sistema_rh_sa.entity.enums.Status;
 import com.senai.sistema_rh_sa.repository.EntregadorRepository;
+import com.senai.sistema_rh_sa.repository.RepasseRepository;
 import com.senai.sistema_rh_sa.service.EntregadorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,86 +20,91 @@ public class EntregadorServiceImpl implements EntregadorService {
     @Autowired
     private EntregadorRepository repository;
 
+    @Autowired
+    private RepasseRepository repasseRepository;
+
     @Override
-    public com.senai.sistema_rh_sa.entity.Entregador salvar(Entregador entregadorDto) {
-        com.senai.sistema_rh_sa.entity.Entregador entregador = new com.senai.sistema_rh_sa.entity.Entregador();
-        entregador.setNome(entregador.getNome());
-        entregador.setCpf(entregador.getCpf());
-        entregador.setEndereco(entregador.getEndereco());
-        entregador.setTelefone(entregador.getTelefone());
-        this.verificaCpf(entregador);
-        this.verificaTelefone(entregador);
-        this.verificaCNH(entregador);
-        com.senai.sistema_rh_sa.entity.Entregador entregadorSalvo = this.repository.saveAndFlush(entregador);
+    public Entregador salvar(Entregador entregador) {
+        this.verificaDados(entregador);
+        Entregador entregadorSalvo = this.repository.saveAndFlush(entregador);
         return entregadorSalvo;
     }
 
     @Override
     public void alterarStatusPor(Integer id, Status status) {
-        Optional<com.senai.sistema_rh_sa.entity.Entregador> entregadorOpicional = repository.findById(id);
+        Optional<Entregador> entregadorOpicional = repository.findById(id);
         Preconditions.checkArgument(entregadorOpicional.isPresent(),
                 "Não foi encontrado entregador vinculado aos parâmetros informados");
-        com.senai.sistema_rh_sa.entity.Entregador entragdorEncontrado = entregadorOpicional.get();
+        Entregador entragdorEncontrado = entregadorOpicional.get();
         Preconditions.checkArgument(entragdorEncontrado.getStatus() != status ,
                 "O status não pode ser igual ao atual");
         this.repository.alterarStatusPor(id, status);
     }
 
     @Override
-    public com.senai.sistema_rh_sa.entity.Entregador excluirPor(Integer id) {
-        com.senai.sistema_rh_sa.entity.Entregador entregadorEncontrado = buscarPor(id);
+    public Entregador excluirPor(Integer id) {
+        Entregador entregadorEncontrado = buscarPor(id);
+        Integer qtdeDeRepassesVinculados = repasseRepository.contarRepassesVinculadosPor(id);
+        Preconditions.checkArgument(qtdeDeRepassesVinculados.equals(0),
+                "O entregador está vinculado a um repasse e não pode ser excluído");
         repository.deleteById(entregadorEncontrado.getId());
         return entregadorEncontrado;
     }
 
     @Override
-    public com.senai.sistema_rh_sa.entity.Entregador buscarPor(Integer id) {
-        Optional<com.senai.sistema_rh_sa.entity.Entregador> optionalGenre = repository.findById(id);
+    public Entregador buscarPor(Integer id) {
+        Optional<Entregador> optionalGenre = repository.findById(id);
         Preconditions.checkArgument(optionalGenre.isPresent(),
                 "Não foi encontrado entregador vinculado aos parâmetros informados");
-        com.senai.sistema_rh_sa.entity.Entregador entregadorEncontrado = optionalGenre.get();
+        Entregador entregadorEncontrado = optionalGenre.get();
         Preconditions.checkArgument(entregadorEncontrado.isActive(),
                 "O entregador encontrado está inativo");
         return entregadorEncontrado;
     }
 
     @Override
-    public Page<com.senai.sistema_rh_sa.entity.Entregador> listarPor(String nome, Pageable paginacao) {
-        return repository.listarPor(nome, paginacao);
+    public Integer buscarIdPor(String email) {
+        Integer idEntregador = repository.buscarIdPor(email);
+        Preconditions.checkArgument(idEntregador != null && idEntregador > 0,
+                "Não foi encontrado entregador com o e-mail vinculado");
+        return idEntregador;
     }
 
-    private void verificaCpf(com.senai.sistema_rh_sa.entity.Entregador entregador) {
-        com.senai.sistema_rh_sa.entity.Entregador entregadorEncontrado = repository.buscarPorCPF(entregador.getCpf());
+    @Override
+    public Page<Entregador> listarPor(
+            String nome,
+            Optional<String> cpf,
+            Optional<String> email,
+            Optional<String> numeroHabilitacao,
+            Optional<String> telefone,
+            Pageable paginacao) {
+
+        String cpfValidado = cpf.equals("") ? null : cpf.get();
+        String emailValidado = cpf.equals("") ? null : email.get();
+        String numeroHabilitacaoValidado = cpf.equals("") ? null : numeroHabilitacao.get();
+        String telefoneValidado = cpf.equals("") ? null : telefone.get();
+
+        return repository.listarPor("%" + nome + "%", cpfValidado, emailValidado, numeroHabilitacaoValidado, telefoneValidado, paginacao);
+    }
+
+    private void verificaDados(Entregador entregador) {
+        Entregador entregadorEncontrado = repository.buscarPorCPF(entregador.getCpf());
+        verificaIgualdade(entregador, entregadorEncontrado, "O CPF informado já existe");
+
+        entregadorEncontrado = repository.buscarPorNumeroHabilitacao(entregador.getNumeroHabilitacao());
+        verificaIgualdade(entregador, entregadorEncontrado, "O número da Habilitação informada já existe");
+
+        entregadorEncontrado = repository.buscarPorTelefone(entregador.getTelefone());
+        verificaIgualdade(entregador, entregadorEncontrado, "O telefone informado já existe");
+    }
+
+    private void verificaIgualdade(Entregador entregador, Entregador entregadorEncontrado, String mensagemErro) {
         if (entregadorEncontrado != null) {
             if (entregador.isPersisted()) {
                 Preconditions.checkArgument(entregadorEncontrado.equals(entregador),
-                        "O CPF informado já existe");
+                        mensagemErro);
             } else {
-                throw new IllegalArgumentException("O CPF informado já existe");
-            }
-        }
-    }
-
-    private void verificaTelefone(com.senai.sistema_rh_sa.entity.Entregador entregador) {
-        com.senai.sistema_rh_sa.entity.Entregador entregadorEncontrado = repository.buscarPorTelefone(entregador.getTelefone());
-        if (entregadorEncontrado != null) {
-            if (entregador.isPersisted()) {
-                Preconditions.checkArgument(entregadorEncontrado.equals(entregador),
-                        "O Telefone informado já existe");
-            } else {
-                throw new IllegalArgumentException("O Telefone informado já existe");
-            }
-        }
-    }
-
-    private void verificaCNH(com.senai.sistema_rh_sa.entity.Entregador entregador) {
-        com.senai.sistema_rh_sa.entity.Entregador entregadorEncontrado = repository.buscarPorCNH(entregador.getNumeroHabilitacao());
-        if (entregadorEncontrado != null) {
-            if (entregador.isPersisted()) {
-                Preconditions.checkArgument(entregadorEncontrado.equals(entregador),
-                        "O número da habilitação informado já existe");
-            } else {
-                throw new IllegalArgumentException("O número da habilitação informado já existe");
+                throw new IllegalArgumentException(mensagemErro);
             }
         }
     }

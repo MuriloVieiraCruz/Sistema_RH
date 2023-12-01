@@ -5,6 +5,7 @@ import com.senai.sistema_rh_sa.entity.enums.Papel;
 import com.senai.sistema_rh_sa.entity.enums.Status;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -33,27 +34,31 @@ public class Entregador {
     @Column(name = "cpf")
     private String cpf;
 
+    @Email(message = "O formato do e-mail está inválido")
+    @Column(name = "email")
+    private String email;
+
     @Embedded
     @Valid
     private Endereco endereco;
 
     @NotBlank(message = "O número da habilitação é obrigatório")
-    @Size(max = 10, min = 10, message = "O número da habilitação deve conter 10 caracteres")
+    @Size(max = 11, min = 11, message = "O número da habilitação deve conter 11 caracteres")
     @Column(name = "numero_habilitacao")
     private String numeroHabilitacao;
 
     @NotBlank(message = "O telefone é obrigatório")
     @Size(max = 14, min = 14, message = "O telefone deve conter 14 caracteres")
-    @Column(name = "")
+    @Column(name = "telefone")
     private String telefone;
 
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "O papel do entregador é obrigatório")
+    @NotNull(message = "O papel do entregador é obrigatório")
     @Column(name = "papel")
     private Papel papel;
 
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "O status do entregador é obrigatório")
+    @NotNull(message = "O status do entregador é obrigatório")
     @Column(name = "status")
     private Status status;
 

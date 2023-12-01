@@ -1,7 +1,6 @@
 package com.senai.sistema_rh_sa.service.impl;
 
 import com.google.common.base.Preconditions;
-import com.senai.sistema_rh_sa.dto.NovoEntregador;
 import com.senai.sistema_rh_sa.entity.Endereco;
 import com.senai.sistema_rh_sa.entity.Entregador;
 import com.senai.sistema_rh_sa.entity.enums.Status;
@@ -25,19 +24,7 @@ public class EntregadorServiceImpl implements EntregadorService {
     private RepasseRepository repasseRepository;
 
     @Override
-    public Entregador salvar(NovoEntregador novoEntregadorDto) {
-        Entregador entregador = new Entregador();
-        entregador.setNome(novoEntregadorDto.getNome());
-        entregador.setCpf(novoEntregadorDto.getCpf());
-        Endereco endereco = new Endereco();
-        endereco.setBairro(novoEntregadorDto.getBairro());
-        endereco.setLogradouro(novoEntregadorDto.getLogradouro());
-        endereco.setCidade(novoEntregadorDto.getCidade());
-        endereco.setEstado(novoEntregadorDto.getEstado());
-        entregador.setEndereco(endereco);
-        entregador.setTelefone(novoEntregadorDto.getTelefone());
-        entregador.setNumeroHabilitacao(novoEntregadorDto.getNumeroHabilitacao());
-        entregador.setSeguroDeVida(novoEntregadorDto.getSeguroDeVida());
+    public Entregador salvar(Entregador entregador) {
         this.verificaDados(entregador);
         Entregador entregadorSalvo = this.repository.saveAndFlush(entregador);
         return entregadorSalvo;
@@ -57,10 +44,10 @@ public class EntregadorServiceImpl implements EntregadorService {
     @Override
     public Entregador excluirPor(Integer id) {
         Entregador entregadorEncontrado = buscarPor(id);
-        repository.deleteById(entregadorEncontrado.getId());
         Integer qtdeDeRepassesVinculados = repasseRepository.contarRepassesVinculadosPor(id);
-        Preconditions.checkArgument(qtdeDeRepassesVinculados >= 1,
+        Preconditions.checkArgument(qtdeDeRepassesVinculados.equals(0),
                 "O entregador está vinculado a um repasse e não pode ser excluído");
+        repository.deleteById(entregadorEncontrado.getId());
         return entregadorEncontrado;
     }
 
@@ -84,18 +71,30 @@ public class EntregadorServiceImpl implements EntregadorService {
     }
 
     @Override
-    public Page<Entregador> listarPor(String nome, String cpf, String cnh, String telefone, Pageable paginacao) {
-        return repository.listarPor(nome, cpf, cnh, telefone, paginacao);
+    public Page<Entregador> listarPor(
+            String nome,
+            Optional<String> cpf,
+            Optional<String> email,
+            Optional<String> numeroHabilitacao,
+            Optional<String> telefone,
+            Pageable paginacao) {
+
+        String cpfValidado = cpf.equals("") ? null : cpf.get();
+        String emailValidado = cpf.equals("") ? null : email.get();
+        String numeroHabilitacaoValidado = cpf.equals("") ? null : numeroHabilitacao.get();
+        String telefoneValidado = cpf.equals("") ? null : telefone.get();
+
+        return repository.listarPor("%" + nome + "%", cpfValidado, emailValidado, numeroHabilitacaoValidado, telefoneValidado, paginacao);
     }
 
     private void verificaDados(Entregador entregador) {
         Entregador entregadorEncontrado = repository.buscarPorCPF(entregador.getCpf());
         verificaIgualdade(entregador, entregadorEncontrado, "O CPF informado já existe");
 
-        entregadorEncontrado = repository.buscarPorCNH(entregador.getNumeroHabilitacao());
-        verificaIgualdade(entregador, entregadorEncontrado, "A CNH informada já existe");
+        entregadorEncontrado = repository.buscarPorNumeroHabilitacao(entregador.getNumeroHabilitacao());
+        verificaIgualdade(entregador, entregadorEncontrado, "O número da Habilitação informada já existe");
 
-        entregadorEncontrado = repository.buscarPorCNH(entregador.getNumeroHabilitacao());
+        entregadorEncontrado = repository.buscarPorTelefone(entregador.getTelefone());
         verificaIgualdade(entregador, entregadorEncontrado, "O telefone informado já existe");
     }
 

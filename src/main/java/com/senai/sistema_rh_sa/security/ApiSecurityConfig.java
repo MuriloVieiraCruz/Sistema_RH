@@ -41,15 +41,17 @@ public class ApiSecurityConfig {
 			AuthenticationConfiguration authConfig) throws Exception {
 		return authConfig.getAuthenticationManager();
 	}
-	
+
+	@Bean
 	public AuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
 		authenticationProvider.setUserDetailsService(service);
 		authenticationProvider.setPasswordEncoder(passwordEncoder());
 		return authenticationProvider;
 	}
-	
-	private UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource() {
+
+	@Bean
+	public UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource() {
 		CorsConfiguration corsConfiguration = new CorsConfiguration();
 		corsConfiguration.applyPermitDefaultValues();
 		corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
@@ -65,15 +67,18 @@ public class ApiSecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
 			.csrf(csrf -> csrf.disable())
-			.authorizeHttpRequests(request ->
-					request.
-						requestMatchers("/auth/**")
-							.permitAll()
-							.requestMatchers("/entregadores/**")
-							.permitAll()
-							.requestMatchers("/**")
-							.permitAll()
-						.anyRequest().authenticated())
+				.cors()
+				.configurationSource(urlBasedCorsConfigurationSource())
+				.and()
+					.authorizeHttpRequests(request ->
+						request.
+							requestMatchers("/auth/**")
+								.permitAll()
+								.requestMatchers("/entregadores/**")
+								.permitAll()
+								.requestMatchers("/**")
+								.permitAll()
+							.anyRequest().authenticated())
 			.sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authenticationProvider(authenticationProvider())
 			.addFilterBefore(filtroDeAutenticacao, UsernamePasswordAuthenticationFilter.class)

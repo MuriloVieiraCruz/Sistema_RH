@@ -1,6 +1,5 @@
 package com.senai.sistema_rh_sa.service.proxy;
 
-import com.senai.sistema_rh_sa.dto.NovoEntregador;
 import com.senai.sistema_rh_sa.entity.Entregador;
 import com.senai.sistema_rh_sa.entity.enums.Status;
 import com.senai.sistema_rh_sa.service.EntregadorService;
@@ -10,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class EntregadorServiceProxy implements EntregadorService {
 
@@ -18,8 +19,8 @@ public class EntregadorServiceProxy implements EntregadorService {
     private EntregadorService service;
 
     @Override
-    public Entregador salvar(NovoEntregador novoEntregador) {
-        return this.service.salvar(novoEntregador);
+    public Entregador salvar(Entregador entregador) {
+        return this.service.salvar(entregador);
     }
 
     @Override
@@ -43,8 +44,14 @@ public class EntregadorServiceProxy implements EntregadorService {
     }
 
     @Override
-    public Page<Entregador> listarPor(String nome, String cpf, String cnh, String telefone, Pageable paginacao) {
-        return this.service.listarPor(nome, cpf, cnh, telefone, paginacao);
+    public Page<Entregador> listarPor(
+            String nome,
+            Optional<String> cpf,
+            Optional<String> email,
+            Optional<String> numeroHabilitacao,
+            Optional<String> telefone,
+            Pageable paginacao) {
+        return this.service.listarPor(nome, cpf, email, numeroHabilitacao, telefone, paginacao);
     }
 
 }

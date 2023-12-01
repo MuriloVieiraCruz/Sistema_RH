@@ -1,7 +1,6 @@
 package com.senai.sistema_rh_sa.controller;
 
 import com.google.common.base.Preconditions;
-import com.senai.sistema_rh_sa.dto.NovoEntregador;
 import com.senai.sistema_rh_sa.entity.Entregador;
 import com.senai.sistema_rh_sa.entity.enums.Status;
 import com.senai.sistema_rh_sa.service.EntregadorService;
@@ -18,7 +17,7 @@ import java.net.URI;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/entregadores")
+@RequestMapping("/entregador")
 public class EntregadorController {
 
     @Autowired
@@ -30,19 +29,19 @@ public class EntregadorController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<?> salvar(@RequestBody NovoEntregador novoEntregador) {
-        Preconditions.checkArgument(!novoEntregador.isPersisted(),
+    public ResponseEntity<?> salvar(@RequestBody Entregador entregador) {
+        Preconditions.checkArgument(!entregador.isPersisted(),
                 "O entregador não pode conter ID na inserção");
-        Entregador entregadorSalvo = service.salvar(novoEntregador);
-        return ResponseEntity.created(URI.create("/entregador/id" + entregadorSalvo.getId())).build();
+        Entregador entregadorSalvo = service.salvar(entregador);
+        return ResponseEntity.created(URI.create("/entregador/id/" + entregadorSalvo.getId())).build();
     }
 
     @PutMapping
     @Transactional
-    public ResponseEntity<?> alterar(@RequestBody NovoEntregador novoEntregador) {
-        Preconditions.checkArgument(novoEntregador.isPersisted(),
+    public ResponseEntity<?> alterar(@RequestBody Entregador entregador) {
+        Preconditions.checkArgument(entregador.isPersisted(),
                 "O entregador precisa ter um ID para alteração");
-        Entregador entregadorAlterado = service.salvar(novoEntregador);
+        Entregador entregadorAlterado = service.salvar(entregador);
         return ResponseEntity.ok(converter.toJsonMap(entregadorAlterado));
     }
 
@@ -54,23 +53,24 @@ public class EntregadorController {
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<?> searchBy(@PathVariable("id") Integer id) {
+    public ResponseEntity<?> buscarPor(@PathVariable("id") Integer id) {
         Entregador entregadorEncontrado = service.buscarPor(id);
         return ResponseEntity.ok(converter.toJsonMap(entregadorEncontrado));
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<?> searchBy(@PathVariable("email") String email) {
+    public ResponseEntity<?> buscarPor(@PathVariable("email") String email) {
         Integer idEntregador = service.buscarIdPor(email);
         return ResponseEntity.ok(converter.toJsonMap(idEntregador));
     }
 
     @GetMapping
-    public ResponseEntity<?> listBy(
+    public ResponseEntity<?> listarPor(
             @RequestParam("nome") String nome,
-            @RequestParam("cpf") String cpf,
-            @RequestParam("cnh") String cnh,
-            @RequestParam("telefone") String telefone,
+            @RequestParam("cpf") Optional<String> cpf,
+            @RequestParam("email") Optional<String> email,
+            @RequestParam("numeroHabilitacao") Optional<String> numeroHabilitacao,
+            @RequestParam("telefone") Optional<String> telefone,
             @RequestParam("pagina") Optional<Integer> pagina) {
         Pageable paginacao = null;
         if (pagina.isPresent()) {
@@ -79,13 +79,13 @@ public class EntregadorController {
             paginacao = PageRequest.of(0, 20);
         }
 
-        Page<Entregador> entregadores = service.listarPor(nome, cpf, cnh, telefone, paginacao);
+        Page<Entregador> entregadores = service.listarPor(nome, cpf, email, numeroHabilitacao, telefone, paginacao);
         return ResponseEntity.ok(converter.toJsonList(entregadores));
     }
 
     @DeleteMapping("id/{id}")
     @Transactional
-    public ResponseEntity<?> excludeBy(@PathVariable("id") Integer id) {
+    public ResponseEntity<?> excluirPor(@PathVariable("id") Integer id) {
         Entregador entregadorExcluido = service.excluirPor(id);
         return ResponseEntity.ok(converter.toJsonMap(entregadorExcluido));
     }

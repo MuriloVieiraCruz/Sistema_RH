@@ -31,11 +31,11 @@ public class JReportServiceImpl {
         String valorCabecalho = "attachment; filename=pdf" + dataHoraAtual + ".pdf";
         response.setHeader(chaveCabecalho, valorCabecalho);
 
-        File file = ResourceUtils.getFile("classpath:pagamentosRH.jrxml");
+        File file = ResourceUtils.getFile("classpath:RelatorioRepasses.jrxml");
         JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(repasses);
         Map<String, Object> parametros = new HashMap<>();
-        parametros.put("createBy", "RH_system");
+        parametros.put("criado por: ", "RH_market_place sistemas");
 
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, dataSource);

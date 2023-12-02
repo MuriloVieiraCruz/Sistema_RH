@@ -81,8 +81,6 @@ public class RepasseServiceImpl implements RepasseService {
                 BigDecimal valorLiquidoFinal = valorLiquido.add(valorBonificacao).setScale(2, RoundingMode.CEILING);
                 repasse.setValorLiquido(valorLiquidoFinal);
                 repasse.setBonificacao(percentualDeBonificacao);
-                BigDecimal reducao = new BigDecimal(35);
-                percentualDeBonificacao = valorBonificacao.subtract(reducao);
             } else {
                 repasse.setBonificacao(new BigDecimal(0));
                 repasse.setValorLiquido(valorLiquido);

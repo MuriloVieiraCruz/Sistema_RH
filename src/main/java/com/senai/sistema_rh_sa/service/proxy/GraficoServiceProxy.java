@@ -1,5 +1,6 @@
 package com.senai.sistema_rh_sa.service.proxy;
 
+import com.senai.sistema_rh_sa.dto.DadosGrafico;
 import com.senai.sistema_rh_sa.entity.DadosDoGrafico;
 import com.senai.sistema_rh_sa.entity.Repasse;
 import com.senai.sistema_rh_sa.service.GraficoService;
@@ -19,7 +20,7 @@ public class GraficoServiceProxy implements GraficoService {
     private GraficoService service;
 
     @Override
-    public Map<Integer, DadosDoGrafico> calcularDadosPor(Integer ano, Integer mes) {
+    public List<DadosGrafico> calcularDadosPor(Integer ano, Integer mes) {
        return service.calcularDadosPor(ano, mes);
     }
 }

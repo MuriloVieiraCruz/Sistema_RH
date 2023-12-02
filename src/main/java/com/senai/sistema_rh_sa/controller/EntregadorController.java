@@ -60,8 +60,8 @@ public class EntregadorController {
 
     @GetMapping("/email/{email}")
     public ResponseEntity<?> buscarPor(@PathVariable("email") String email) {
-        Integer idEntregador = service.buscarIdPor(email);
-        return ResponseEntity.ok(converter.toJsonMap(idEntregador));
+        Entregador entregador = service.buscarPor(email);
+        return ResponseEntity.ok(converter.toJsonMap(entregador));
     }
 
     @GetMapping

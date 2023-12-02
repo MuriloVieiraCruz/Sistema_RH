@@ -39,8 +39,8 @@ public class EntregadorServiceProxy implements EntregadorService {
     }
 
     @Override
-    public Integer buscarIdPor(String email) {
-        return service.buscarIdPor(email);
+    public Entregador buscarPor(String email) {
+        return service.buscarPor(email);
     }
 
     @Override

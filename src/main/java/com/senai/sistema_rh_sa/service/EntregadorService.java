@@ -39,7 +39,7 @@ public interface EntregadorService {
             @NotNull(message = "O ID é obrigatório")
             Integer id);
 
-    public Integer buscarIdPor(
+    public Entregador buscarPor(
             @Email(message = "O formato do e-mail está inválido")
             @NotBlank(message = "O email é obrigatório")
             String email);

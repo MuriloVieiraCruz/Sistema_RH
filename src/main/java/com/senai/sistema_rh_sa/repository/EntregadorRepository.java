@@ -45,8 +45,8 @@ public interface EntregadorRepository extends JpaRepository<Entregador, Integer>
             String telefone,
             Pageable paginacao);
 
-    @Query(value = "SELECT e.id FROM Entregador e WHERE e.email = :email ")
-    public Integer buscarIdPor(String email);
+    @Query(value = "SELECT e FROM Entregador e WHERE e.email = :email ")
+    public Entregador buscarPor(String email);
 
     @Modifying
     @Query(value = "UPDATE Entregador e SET e.status = :status WHERE e.id = :id ")

@@ -14,8 +14,8 @@ import java.util.List;
 public interface RepasseService {
 
     default public List<Repasse> calcularRepassesPor(
-            @Max(value = 4, message = "O formato do ano não pode conter mais de 4 digitos")
-            @Min(value = 4, message = "O formato do ano não pode conter menos de 4 digitos")
+            //@Max(value = 4, message = "O formato do ano não pode conter mais de 4 digitos")
+            //@Min(value = 4, message = "O formato do ano não pode conter menos de 4 digitos")
             @Positive(message = "O ano deve ser positivo")
             @NotNull(message = "A ano é obrigatório")
             Integer ano,

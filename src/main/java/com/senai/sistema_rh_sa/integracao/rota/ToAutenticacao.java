@@ -1,11 +1,9 @@
-/*
 package com.senai.sistema_rh_sa.integracao.rota;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.http.HttpMethods;
-import org.apache.camel.util.json.JsonObject;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,26 +11,26 @@ import org.springframework.stereotype.Component;
 @Component
 public class ToAutenticacao extends RouteBuilder {
 
-    @Value("${url.requisicao.token.api}")
+    @Value("${url.requisicao.token.logistica}")
     private String urlToken;
-    @Value("${username.api}")
-    private String username;
-    @Value("${password.api}")
-    private String password;
+    @Value("${username.logistica}")
+    private String login;
+    @Value("${password.logistica}")
+    private String senha;
 
 
     @Override
     public void configure() throws Exception {
-        from("direct:autenticacao")
+        from("direct:autenticacaoLogistica")
                 .doTry()
                 .setHeader(Exchange.HTTP_METHOD, constant(HttpMethods.POST))
                 .setHeader(Exchange.CONTENT_TYPE, constant("application/json;charset=UTF-8"))
                 .process(new Processor() {
                     @Override
                     public void process(Exchange exchange) throws Exception {
-                        JsonObject requestBody = new JsonObject();
-                        requestBody.put("login", username);
-                        requestBody.put("senha", password);
+                        JSONObject requestBody = new JSONObject();
+                        requestBody.put("login", login);
+                        requestBody.put("senha", senha);
                         exchange.getMessage().setBody(requestBody.toString());
                     }
                 })
@@ -40,7 +38,7 @@ public class ToAutenticacao extends RouteBuilder {
                 .process(new Processor() {
                     @Override
                     public void process(Exchange exchange) throws Exception {
-                        String respostaJson = exchange.getIn().getBody(String.class);
+                        String respostaJson = exchange.getMessage().getBody(String.class);
                         JSONObject jsonObject = new JSONObject(respostaJson);
                         String token = jsonObject.getString("token");
                         exchange.setProperty("token", token);
@@ -49,4 +47,3 @@ public class ToAutenticacao extends RouteBuilder {
                 .end();
     }
 }
-*/

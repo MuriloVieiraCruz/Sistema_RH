@@ -1,6 +1,7 @@
 package com.senai.sistema_rh_sa.service.proxy;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class RepasseServiceProxy implements RepasseService {
             Frete frete = new Frete();
             frete.setId(jsonObject.getInt("id"));
             frete.setValorTotal(jsonObject.getBigDecimal("valorTotal"));
-            //frete.setDataMovimento(jsonObject.get("dataMovimento"));
+            frete.setDataMovimento((Instant) jsonObject.get("dataMovimento"));
             frete.setIdEntregador(jsonObject.getInt("idEntregador"));
             listaDeFretes.add(frete);
         }

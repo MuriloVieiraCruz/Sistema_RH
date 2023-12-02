@@ -30,6 +30,7 @@ public class Frete {
     @NotNull(message = "A data de movimento não pode ser nula")
     private Instant dataMovimento;
 
+    @Positive(message = "O id do entregador precisa ser maior que 0")
     @NotNull(message = "O entregador não pode ser nulo")
     private Integer idEntregador;
 

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ToApiAutenticacao extends RouteBuilder {
 
-    @Value("${url.requisicao.autenticacao.api}")
+    @Value("${url.requisicao.autenticacao.cadastros}")
     private String urlAutenticacao;
 
     @Autowired

@@ -48,7 +48,5 @@ public class JReportServiceImpl {
         String pdfBase64 = Base64.getEncoder().encodeToString(output);
 
         return pdfBase64;
-
-        //JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
     }
 }

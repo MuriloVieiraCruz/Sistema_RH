@@ -1,9 +1,10 @@
 package com.senai.sistema_rh_sa.service.proxy;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import com.senai.sistema_rh_sa.dto.Frete;
 import com.senai.sistema_rh_sa.entity.Repasse;
@@ -44,24 +45,35 @@ public class RepasseServiceProxy implements RepasseService {
             return repasses;
         }
 
-        JSONObject requestBodyAnoMes = new JSONObject();
-        requestBodyAnoMes.put("ano", ano);
-        requestBodyAnoMes.put("mes", mes);
-        JSONArray jsonArray = toApiFrete.requestBody("direct:buscarFrete", requestBodyAnoMes, JSONArray.class);
-        List<Frete> listaDeFretes = new ArrayList<>();
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonObject = jsonArray.getJSONObject(i);
-            Frete frete = new Frete();
-            frete.setId(jsonObject.getInt("id"));
-            frete.setValorTotal(jsonObject.getBigDecimal("valorTotal"));
-            frete.setDataMovimento((Instant) jsonObject.get("dataMovimento"));
-            frete.setIdEntregador(jsonObject.getInt("idEntregador"));
-            listaDeFretes.add(frete);
+
+
+        List<Frete> fretesRealizados = new ArrayList<>();
+
+        Random random = new Random();
+
+        for (int i = 0; i < 40; i++) {
+            BigDecimal valorTotal = BigDecimal.valueOf(random.nextDouble() * 400).setScale(2, RoundingMode.CEILING); // Valor aleatório entre 0 e 1000
+            int idEntregador = random.nextInt(5) + 1;
+
+            Frete frete = new Frete(i + 1, valorTotal, Instant.now(), idEntregador);
+            fretesRealizados.add(frete);
         }
 
-        List<Repasse> repasses = this.service.calcularRepassesPor(listaDeFretes, ano, mes);
+        Map<Integer, BigDecimal> totalPorEntregador = new HashMap<>();
+
+        for (Frete frete : fretesRealizados) {
+            int idEntregador = frete.getIdEntregador();
+            BigDecimal valorTotal = frete.getValorTotal();
+
+            if (totalPorEntregador.containsKey(idEntregador)) {
+                BigDecimal totalAtual = totalPorEntregador.get(idEntregador);
+                totalPorEntregador.put(idEntregador, totalAtual.add(valorTotal));
+            } else {
+                totalPorEntregador.put(idEntregador, valorTotal);
+            }
+        }
+
+        List<Repasse> repasses = service.calcularRepassesPor(fretesRealizados, ano, mes);
         return repasses;
     }
-
-
 }

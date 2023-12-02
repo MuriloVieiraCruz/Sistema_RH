@@ -1,10 +1,10 @@
 package com.senai.sistema_rh_sa.security;
 
-import com.senai.sistema_rh_sa.service.impl.CredencialDeAcessoImpl;
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -18,8 +18,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
-import java.util.Arrays;
+import com.senai.sistema_rh_sa.service.impl.CredencialDeAcessoImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -51,25 +52,23 @@ public class ApiSecurityConfig {
 	}
 
 	@Bean
-	public UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource() {
-		CorsConfiguration corsConfiguration = new CorsConfiguration();
-		corsConfiguration.applyPermitDefaultValues();
-		corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
-		corsConfiguration.setAllowedMethods(Arrays.asList("*"));
-		corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
-		corsConfiguration.setExposedHeaders(Arrays.asList("*"));
-		UrlBasedCorsConfigurationSource ccs = new UrlBasedCorsConfigurationSource();
-		ccs.registerCorsConfiguration("/**", corsConfiguration);
-		return ccs;
-	}
+    public CorsFilter corsFilter() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.applyPermitDefaultValues();         
+        corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
+        corsConfiguration.setAllowedMethods(Arrays.asList("*"));
+	    corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
+	    corsConfiguration.setAllowedOriginPatterns(Arrays.asList("*"));
+	    corsConfiguration.setExposedHeaders(Arrays.asList("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return new CorsFilter(source);
+    }
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
-			.csrf(csrf -> csrf.disable())
-				.cors()
-				.configurationSource(urlBasedCorsConfigurationSource())
-				.and()
+			.csrf(csrf -> csrf.disable())				
 					.authorizeHttpRequests(request ->
 						request.
 							requestMatchers("/auth/**")
@@ -79,10 +78,10 @@ public class ApiSecurityConfig {
 								.requestMatchers("/**")
 								.permitAll()
 							.anyRequest().authenticated())
+					.cors(c -> corsFilter())
 			.sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authenticationProvider(authenticationProvider())
-			.addFilterBefore(filtroDeAutenticacao, UsernamePasswordAuthenticationFilter.class)
-			.cors(c -> urlBasedCorsConfigurationSource());
+			.addFilterBefore(filtroDeAutenticacao, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
 }

@@ -69,14 +69,26 @@ public class RepasseServiceImpl implements RepasseService {
             repassesConsolidados.add(re);
         });
 
+        repassesConsolidados.sort(Comparator.comparingInt(Repasse::getQuantidadeDeEntregas).reversed());
+
+        int contador = 0;
         for (Repasse repasse : repassesConsolidados){
             BigDecimal valorLiquido = repasse.getValorBruto().subtract(taxaDeSeguro).setScale(2, RoundingMode.CEILING);
-            BigDecimal divisor = new BigDecimal(100);
-            BigDecimal percentual = percentualDeBonificacao.divide(divisor);
-            BigDecimal valorBonificacao = valorLiquido.multiply(percentual);
-            BigDecimal valorLiquidoFinal = valorLiquido.add(valorBonificacao).setScale(2, RoundingMode.CEILING);
-            repasse.setValorLiquido(valorLiquidoFinal);
-            repasse.setBonificacao(percentualDeBonificacao);
+            if (contador < 3) {
+                BigDecimal divisor = new BigDecimal(100);
+                BigDecimal percentual = percentualDeBonificacao.divide(divisor);
+                BigDecimal valorBonificacao = valorLiquido.multiply(percentual);
+                BigDecimal valorLiquidoFinal = valorLiquido.add(valorBonificacao).setScale(2, RoundingMode.CEILING);
+                repasse.setValorLiquido(valorLiquidoFinal);
+                repasse.setBonificacao(percentualDeBonificacao);
+                BigDecimal reducao = new BigDecimal(35);
+                percentualDeBonificacao = valorBonificacao.subtract(reducao);
+            } else {
+                repasse.setBonificacao(new BigDecimal(0));
+                repasse.setValorLiquido(valorLiquido);
+            }
+
+            contador++;
             repasse.setTaxaSeguroDeVida(taxaDeSeguro);
             repository.save(repasse);
         }

@@ -62,4 +62,6 @@ public class RepasseServiceProxy implements RepasseService {
         List<Repasse> repasses = this.service.calcularRepassesPor(listaDeFretes, ano, mes);
         return repasses;
     }
+
+
 }

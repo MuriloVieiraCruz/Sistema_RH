@@ -32,9 +32,8 @@ public class RepasseController {
     private String gerarRelatorioPor(HttpServletResponse response, @RequestBody Filtro filtro) throws JRException, IOException {
         List<Repasse> repasses = service.calcularRepassesPor(filtro.getAno(), filtro.getMes());
 
+        String relatorioPdf = jReportService.exportJasperReport(response, repasses);
 
-        //String relatorioPdf = jReportService.exportJasperReport(response, repasses);
-
-        return "";
+        return relatorioPdf;
     }
 }

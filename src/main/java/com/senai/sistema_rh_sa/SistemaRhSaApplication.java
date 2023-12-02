@@ -32,6 +32,8 @@ public class SistemaRhSaApplication {
     public CommandLineRunner commandLineRunner() {
         return args -> {
             System.out.println("The system started");
+
+
         };
     }
 

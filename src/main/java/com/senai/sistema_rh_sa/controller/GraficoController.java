@@ -2,7 +2,6 @@ package com.senai.sistema_rh_sa.controller;
 
 import com.senai.sistema_rh_sa.dto.DadosGrafico;
 import com.senai.sistema_rh_sa.dto.Filtro;
-import com.senai.sistema_rh_sa.entity.DadosDoGrafico;
 import com.senai.sistema_rh_sa.service.GraficoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

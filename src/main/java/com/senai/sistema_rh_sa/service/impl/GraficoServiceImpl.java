@@ -2,7 +2,6 @@ package com.senai.sistema_rh_sa.service.impl;
 
 import com.senai.sistema_rh_sa.dto.DadosGrafico;
 import com.senai.sistema_rh_sa.dto.Mes;
-import com.senai.sistema_rh_sa.entity.DadosDoGrafico;
 import com.senai.sistema_rh_sa.entity.Repasse;
 import com.senai.sistema_rh_sa.repository.RepasseRepository;
 import com.senai.sistema_rh_sa.service.GraficoService;

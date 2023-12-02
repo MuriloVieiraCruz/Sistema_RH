@@ -1,9 +1,6 @@
 package com.senai.sistema_rh_sa.service;
 
 import com.senai.sistema_rh_sa.dto.DadosGrafico;
-import com.senai.sistema_rh_sa.dto.Frete;
-import com.senai.sistema_rh_sa.entity.DadosDoGrafico;
-import com.senai.sistema_rh_sa.entity.Repasse;
 import com.senai.sistema_rh_sa.service.exception.MetodoNaoSuportadoException;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

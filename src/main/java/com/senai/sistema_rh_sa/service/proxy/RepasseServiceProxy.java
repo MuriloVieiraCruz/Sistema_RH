@@ -59,8 +59,8 @@ public class RepasseServiceProxy implements RepasseService {
             frete.setId(jsonObject.getInt("id"));
             frete.setValorTotal(jsonObject.getBigDecimal("valorTotal"));
 
-            LocalDateTime localDateTime = LocalDateTime.parse(jsonObject.getString("dataMovimento")); // Assumindo que a data está no formato correto
-            ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault()); // Pode ser necessário ajustar a ZoneId conforme necessário
+            LocalDateTime localDateTime = LocalDateTime.parse(jsonObject.getString("dataMovimento"));
+            ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
             Instant instant = zonedDateTime.toInstant();
 
             frete.setDataMovimento(instant);

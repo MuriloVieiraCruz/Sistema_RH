@@ -20,10 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.senai.sistema_rh_sa.dto.AnoDeRepasse;
-import com.senai.sistema_rh_sa.dto.DadosGrafico;
-import com.senai.sistema_rh_sa.dto.Filtro;
 import com.senai.sistema_rh_sa.dto.MesDeRepasse;
-import com.senai.sistema_rh_sa.service.GraficoService;
 
 @RestController
 @RequestMapping("/grafico")
@@ -42,51 +39,14 @@ public class GraficoController {
     		@PathVariable("ano")
     		Integer ano){
 
-    	AnoDeRepasse repasseAnual = new AnoDeRepasse();
-    	repasseAnual.setAno(2023);
-
-    	MesDeRepasse mes = new MesDeRepasse();
-    	mes.setNome("Julho");
-    	mes.setValorRepassado(new BigDecimal(10500.2));
-    	repasseAnual.getMeses().add(mes);
-
-    	mes = new MesDeRepasse();
-    	mes.setNome("Agosto");
-    	mes.setValorRepassado(new BigDecimal(4500.2));
-    	repasseAnual.getMeses().add(mes);
-
-    	mes = new MesDeRepasse();
-    	mes.setNome("Setembro");
-    	mes.setValorRepassado(new BigDecimal(9200.2));
-    	repasseAnual.getMeses().add(mes);
-
-    	mes = new MesDeRepasse();
-    	mes.setNome("Outubro");
-    	mes.setValorRepassado(new BigDecimal(11000.2));
-    	repasseAnual.getMeses().add(mes);
-
+        AnoDeRepasse repasseAnual = service.calcularDadosPor(ano, null);
     	return ResponseEntity.ok(converter.toJsonMap(repasseAnual));
     }
 
     @PostMapping
     private ResponseEntity<?> buscarDadosPor(@RequestBody Filtro filtro) {
-        List<DadosGrafico> dados = service.calcularDadosPor(filtro.getAno(), filtro.getMes());
+        AnoDeRepasse dados = service.calcularDadosPor(filtro.getAno(), filtro.getMes());
         List<Map<String, Object>> listagem = new ArrayList<Map<String,Object>>();
-        for (DadosGrafico dadoGrafico : dados) {
-            listagem.add(converter(dadoGrafico));
-        }
         return ResponseEntity.ok(listagem);
-    }
-
-    private Map<String, Object> converter(DadosGrafico dadosGrafico) {
-        Map<String, Object> graficoMap = new HashMap<String, Object>();
-        graficoMap.put("ano", dadosGrafico.getAno());
-
-        Map<String, Object> mesMap = new HashMap<String, Object>();
-        mesMap.put("nome", dadosGrafico.getMes().getNome());
-        mesMap.put("volumeMovimentadoDeRepasses", dadosGrafico.getMes().getVolumeMovimentadoDeRepasses());
-
-        graficoMap.put("mes", mesMap);
-        return graficoMap;
     }
 }

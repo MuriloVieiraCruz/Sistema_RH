@@ -1,7 +1,9 @@
 package com.senai.sistema_rh_sa.service.impl;
 
+import com.senai.sistema_rh_sa.dto.AnoDeRepasse;
 import com.senai.sistema_rh_sa.dto.DadosGrafico;
 import com.senai.sistema_rh_sa.dto.Mes;
+import com.senai.sistema_rh_sa.dto.MesDeRepasse;
 import com.senai.sistema_rh_sa.entity.Repasse;
 import com.senai.sistema_rh_sa.repository.RepasseRepository;
 import com.senai.sistema_rh_sa.service.GraficoService;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.*;
+import java.time.format.TextStyle;
 import java.time.temporal.WeekFields;
 import java.util.*;
 
@@ -20,49 +23,57 @@ public class GraficoServiceImpl implements GraficoService {
     private RepasseRepository repository;
 
     @Override
-    public List<DadosGrafico> calcularDadosPor(Integer ano, Integer mes) {
+    public AnoDeRepasse calcularDadosPor(Integer ano, Integer mes) {
         List<Repasse> listaDeRepasses = repository.buscarRepassesPorIntevaloDe(ano, mes);
-        List<DadosGrafico> dadosDoGraficoConsolidados = calcularDadosDoGraficoPor(listaDeRepasses, ano, mes);
-        return dadosDoGraficoConsolidados;
+        AnoDeRepasse repasseAnual = calcularDadosDoGraficoPor(listaDeRepasses, ano, mes);
+        return repasseAnual;
+    }
+
+    @Override
+    public AnoDeRepasse calcularDadosPor(Integer ano) {
+        List<Repasse> listaDeRepasses = repository.buscarRepassesPorIntevaloDe(ano, null);
+        AnoDeRepasse repasseAnual = calcularDadosDoGraficoPor(listaDeRepasses, ano, null);
+        return repasseAnual;
     }
 
     //TODO Verificar se o cálculo do gráfico está pegando certinho
 
-    private List<DadosGrafico> calcularDadosDoGraficoPor(List<Repasse> repasses, Integer ano, Integer mes) {
-        Map<Integer, DadosGrafico> dadosConsolidados = null;
+    private AnoDeRepasse calcularDadosDoGraficoPor(List<Repasse> repasses, Integer ano, Integer mes) {
+        Map<Integer, MesDeRepasse> mesesConsolidados = null;
 
         repasses.sort(Comparator.comparingInt(Repasse::getMes));
 
         if (mes == null) {
-            dadosConsolidados = new HashMap<>();
+            mesesConsolidados = new HashMap<>();
             for (Repasse repasse : repasses) {
 
-                boolean isRepassePresente = dadosConsolidados.get(repasse.getMes()) != null;
-                DadosGrafico dado = null;
+                boolean isRepassePresente = mesesConsolidados.get(repasse.getMes()) != null;
+                MesDeRepasse repasseMensal = null;
 
                 if (isRepassePresente) {
-                    dado = dadosConsolidados.get(repasse.getMes());
-                    BigDecimal valorFinal = dado.getMes().getVolumeMovimentadoDeRepasses().add(repasse.getValorBruto());
-                    dado.getMes().setVolumeMovimentadoDeRepasses(valorFinal);
+                    repasseMensal = mesesConsolidados.get(repasse.getMes());
+                    BigDecimal valorFinal = repasseMensal.getValorRepassado().add(repasse.getValorBruto());
+                    repasseMensal.setValorRepassado(valorFinal);
                 } else {
-                    dado = new DadosGrafico();
-                    Mes mesDoAno = new Mes();
-                    mesDoAno.setNome(Month.of(repasse.getMes()).toString().toLowerCase());
-                    mesDoAno.setVolumeMovimentadoDeRepasses(repasse.getValorBruto());
-                    dado.setAno(repasse.getAno());
-                    dado.setMes(mesDoAno);
+                    repasseMensal = new MesDeRepasse();
+                    repasseMensal.setNome(Month.of(repasse.getMes())
+                            .getDisplayName(TextStyle.FULL, new Locale("pt", "BR"))
+                            .toString()
+                            .toLowerCase());
+                    repasseMensal.setValorRepassado(repasse.getValorBruto());
                 }
-                dadosConsolidados.put(repasse.getMes(), dado);
+                mesesConsolidados.put(repasse.getMes(), repasseMensal);
             }
 
-            List<DadosGrafico> dadosListados = new ArrayList<>();
-            dadosConsolidados.forEach((e, dados) -> {
-                dadosListados.add(dados);
+            AnoDeRepasse repasseAnual = new AnoDeRepasse();
+            repasseAnual.setAno(ano);
+            mesesConsolidados.forEach((e, mesAtual) -> {
+                repasseAnual.getMeses().add(mesAtual);
             });
-            return dadosListados;
+            return repasseAnual;
 
         } else {
-//            dadosConsolidados = new HashMap<>();
+//            mesesConsolidados = new HashMap<>();
 //            Integer indice = 0;
 //
 //            YearMonth yearMonth = YearMonth.of(ano, mes);

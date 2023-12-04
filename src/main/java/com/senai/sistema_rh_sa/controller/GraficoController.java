@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.senai.sistema_rh_sa.dto.DadosGrafico;
 import com.senai.sistema_rh_sa.dto.Filtro;
 import com.senai.sistema_rh_sa.service.GraficoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,6 @@ import com.senai.sistema_rh_sa.dto.MesDeRepasse;
 @RestController
 @RequestMapping("/grafico")
 public class GraficoController {
-
 
     @Autowired
     private MapConverter converter;

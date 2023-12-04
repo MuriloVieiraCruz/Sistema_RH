@@ -1,8 +1,6 @@
 package com.senai.sistema_rh_sa.service.impl;
 
 import com.senai.sistema_rh_sa.dto.AnoDeRepasse;
-import com.senai.sistema_rh_sa.dto.DadosGrafico;
-import com.senai.sistema_rh_sa.dto.Mes;
 import com.senai.sistema_rh_sa.dto.MesDeRepasse;
 import com.senai.sistema_rh_sa.entity.Repasse;
 import com.senai.sistema_rh_sa.repository.RepasseRepository;

@@ -3,7 +3,6 @@ package com.senai.sistema_rh_sa.service;
 import java.util.List;
 
 import com.senai.sistema_rh_sa.dto.AnoDeRepasse;
-import com.senai.sistema_rh_sa.dto.DadosGrafico;
 import com.senai.sistema_rh_sa.service.exception.MetodoNaoSuportadoException;
 
 import jakarta.validation.constraints.NotNull;

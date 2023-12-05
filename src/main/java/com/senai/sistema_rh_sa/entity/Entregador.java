@@ -36,6 +36,7 @@ public class Entregador {
 
     @Email(message = "O formato do e-mail está inválido")
     @Column(name = "email")
+    @NotBlank(message = "O e-mail não pode ser nulo")
     private String email;
 
     @Embedded

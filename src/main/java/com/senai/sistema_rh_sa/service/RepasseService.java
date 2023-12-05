@@ -3,7 +3,6 @@ package com.senai.sistema_rh_sa.service;
 import com.senai.sistema_rh_sa.dto.Frete;
 import com.senai.sistema_rh_sa.entity.Repasse;
 import com.senai.sistema_rh_sa.service.exception.MetodoNaoSuportadoException;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.validation.annotation.Validated;

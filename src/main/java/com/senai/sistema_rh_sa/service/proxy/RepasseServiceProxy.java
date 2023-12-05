@@ -1,8 +1,5 @@
 package com.senai.sistema_rh_sa.service.proxy;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -12,18 +9,12 @@ import java.util.*;
 import com.senai.sistema_rh_sa.dto.Frete;
 import com.senai.sistema_rh_sa.entity.Repasse;
 import com.senai.sistema_rh_sa.repository.RepasseRepository;
-import com.senai.sistema_rh_sa.service.impl.JReportServiceImpl;
-import jakarta.servlet.http.HttpServletResponse;
-import net.sf.jasperreports.engine.JRException;
-import org.apache.camel.ExchangePattern;
 import org.apache.camel.ProducerTemplate;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import com.senai.sistema_rh_sa.dto.Filtro;
 import com.senai.sistema_rh_sa.service.RepasseService;
 
 @Service

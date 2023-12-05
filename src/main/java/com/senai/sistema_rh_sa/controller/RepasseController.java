@@ -12,10 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/repasses")
@@ -28,11 +27,12 @@ public class RepasseController {
     @Autowired
     private JReportServiceImpl jReportService;
 
-    @PostMapping()
-    private String gerarRelatorioPor(HttpServletResponse response, @RequestBody Filtro filtro) throws JRException, IOException {
+    @PostMapping
+    private ResponseEntity<?> gerarRelatorioPor(HttpServletResponse response, @RequestBody Filtro filtro) throws JRException, IOException {
         List<Repasse> repasses = service.calcularRepassesPor(filtro.getAno(), filtro.getMes());
         String relatorioPdf = jReportService.exportJasperReport(response, repasses);
-
-        return relatorioPdf;
+        Map<String, Object> retorno = new HashMap<String, Object>();
+        retorno.put("relatorio", relatorioPdf);
+        return ResponseEntity.ok(retorno);
     }
 }

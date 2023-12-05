@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.*;
 import java.time.format.TextStyle;
-import java.time.temporal.WeekFields;
 import java.util.*;
 
 @Service
@@ -33,8 +32,6 @@ public class GraficoServiceImpl implements GraficoService {
         AnoDeRepasse repasseAnual = calcularDadosDoGraficoPor(listaDeRepasses, ano, null);
         return repasseAnual;
     }
-
-    //TODO Verificar se o cálculo do gráfico está pegando certinho
 
     private AnoDeRepasse calcularDadosDoGraficoPor(List<Repasse> repasses, Integer ano, Integer mes) {
         Map<Integer, MesDeRepasse> mesesConsolidados = null;

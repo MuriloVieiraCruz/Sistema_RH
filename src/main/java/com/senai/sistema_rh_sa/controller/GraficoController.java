@@ -1,8 +1,6 @@
 package com.senai.sistema_rh_sa.controller;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.senai.sistema_rh_sa.dto.AnoDeRepasse;
-import com.senai.sistema_rh_sa.dto.MesDeRepasse;
 
 @RestController
 @RequestMapping("/grafico")

@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.validator.constraints.Range;
 
 import java.math.BigDecimal;
 import java.time.Instant;

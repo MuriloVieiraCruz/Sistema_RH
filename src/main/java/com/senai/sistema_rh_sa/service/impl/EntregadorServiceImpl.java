@@ -1,7 +1,6 @@
 package com.senai.sistema_rh_sa.service.impl;
 
 import com.google.common.base.Preconditions;
-import com.senai.sistema_rh_sa.entity.Endereco;
 import com.senai.sistema_rh_sa.entity.Entregador;
 import com.senai.sistema_rh_sa.entity.enums.Status;
 import com.senai.sistema_rh_sa.repository.EntregadorRepository;

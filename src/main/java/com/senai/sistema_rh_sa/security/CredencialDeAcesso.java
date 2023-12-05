@@ -3,10 +3,8 @@ package com.senai.sistema_rh_sa.security;
 import com.senai.sistema_rh_sa.entity.Usuario;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 

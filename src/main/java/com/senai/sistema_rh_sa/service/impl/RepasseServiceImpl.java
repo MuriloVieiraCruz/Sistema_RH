@@ -6,22 +6,13 @@ import com.senai.sistema_rh_sa.entity.Repasse;
 import com.senai.sistema_rh_sa.repository.RepasseRepository;
 import com.senai.sistema_rh_sa.service.EntregadorService;
 import com.senai.sistema_rh_sa.service.RepasseService;
-import com.senai.sistema_rh_sa.service.exception.MetodoNaoSuportadoException;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import net.sf.jasperreports.engine.JRException;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service

@@ -1,11 +1,8 @@
 package com.senai.sistema_rh_sa.dto;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
-import org.hibernate.validator.constraints.Range;
 
 @Data
 public class Filtro {

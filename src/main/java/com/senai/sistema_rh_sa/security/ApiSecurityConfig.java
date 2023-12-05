@@ -73,10 +73,6 @@ public class ApiSecurityConfig {
 						request.
 							requestMatchers("/auth/**")
 								.permitAll()
-								.requestMatchers("/entregadores/**")
-								.permitAll()
-								.requestMatchers("/**")
-								.permitAll()
 							.anyRequest().authenticated())
 					.cors(c -> corsFilter())
 			.sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
